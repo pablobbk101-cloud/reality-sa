@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reality SA — The Truth About South Africa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:   #0a0a0a;
+      --white:   #f4f0e8;
+      --red:     #c0392b;
+      --gold:    #e8a020;
+      --grey:    #1e1e1e;
+      --mid:     #3a3a3a;
+      --muted:   #888;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      height: 64px;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #222;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--red); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    /* Hamburger */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--white);
+      transition: all 0.3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px; left: 0; right: 0;
+      background: var(--grey);
+      padding: 1.5rem clamp(1.5rem, 5vw, 4rem);
+      z-index: 99;
+      border-bottom: 1px solid #333;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .mobile-menu.open { display: flex; }
+
+    .mobile-menu a {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+
+    .mobile-menu a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: clamp(6rem, 12vw, 10rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(192,57,43,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 20% 70%, rgba(232,160,32,0.07) 0%, transparent 60%),
+        linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+      z-index: 0;
+    }
+
+    /* Diagonal accent line */
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 15%;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(180deg, transparent, rgba(192,57,43,0.4), transparent);
+    }
+
+    .hero-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.5rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 13vw, 11rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+
+    .hero-title .accent { color: var(--red); }
+    .hero-title .sub    { color: var(--gold); display: block; }
+
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+
+    /* ── CTA BUTTONS ── */
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 3rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 1.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+      font-weight: 500;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 24px rgba(192,57,43,0.35);
+    }
+
+    .btn-primary:hover { box-shadow: 0 8px 32px rgba(192,57,43,0.55); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(232,160,32,0.08);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid #333;
+    }
+
+    .btn-ghost:hover {
+      color: var(--white);
+      border-color: #555;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .btn-arrow { font-size: 1rem; }
+
+    /* ── TICKER ── */
+    .ticker-wrap {
+      overflow: hidden;
+      background: var(--red);
+      padding: 0.6rem 0;
+      white-space: nowrap;
+    }
+
+    .ticker-inner {
+      display: inline-flex;
+      animation: ticker 28s linear infinite;
+    }
+
+    .ticker-inner span {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0 3rem;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .ticker-inner span::before {
+      content: '▸ ';
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── ISSUES SECTION ── */
+    .section {
+      padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 5vw, 4rem);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 0.8rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1;
+      margin-bottom: 3rem;
+    }
+
+    .issues-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1px;
+      background: #222;
+      border: 1px solid #222;
+    }
+
+    .issue-card {
+      background: var(--grey);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s, transform 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+
+    .issue-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+      background: var(--card-accent, var(--red));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .issue-card:hover { background: #252525; transform: translateY(-2px); }
+    .issue-card:hover::before { transform: scaleX(1); }
+
+    .issue-card-arrow {
+      position: absolute;
+      bottom: 1.4rem; right: 1.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--card-accent, var(--red));
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .issue-card:hover .issue-card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .issue-icon {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+
+    .issue-name {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.6rem;
+      color: var(--white);
+    }
+
+    .issue-stat {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--card-accent, var(--red));
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .issue-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── ABOUT STRIP ── */
+    .about-strip {
+      background: var(--grey);
+      border-top: 1px solid #2a2a2a;
+      border-bottom: 1px solid #2a2a2a;
+      padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-quote {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.1;
+      color: var(--white);
+    }
+
+    .about-quote em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .about-body {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .about-body p + p { margin-top: 1rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem clamp(1.5rem, 5vw, 4rem);
+      border-top: 1px solid #1e1e1e;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+    }
+
+    .footer-logo span { color: var(--red); }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: #444;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+
+      .about-strip {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .cta-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .btn { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Reality<span>SA</span></a>
+    <ul class="nav-links">
+      <li><a href="#issues">Issues</a></li>
+      <li><a href="statistics.html">Statistics</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#issues" onclick="toggleMenu()">Issues</a>
+    <a href="statistics.html" onclick="toggleMenu()">Statistics</a>
+    <a href="resources.html" onclick="toggleMenu()">Resources</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <p class="hero-tag">South Africa — Unfiltered</p>
+    <h1 class="hero-title">
+      The<span class="accent"> Real</span>
+      <span class="sub">South Africa.</span>
+    </h1>
+    <p class="hero-sub">
+      Reality SA documents the challenges facing South Africa today — 
+      from power cuts to unemployment. No spin. Just the truth.
+    </p>
+    <div class="cta-row">
+      <a href="#issues" class="btn btn-primary">
+        Latest Issues <span class="btn-arrow">↓</span>
+      </a>
+      <a href="statistics.html" class="btn btn-secondary">
+        Statistics <span class="btn-arrow">→</span>
+      </a>
+      <a href="resources.html" class="btn btn-ghost">
+        Resources <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-inner">
+      <span>Load Shedding</span>
+      <span>32% Unemployment</span>
+      <span>Water Shortages</span>
+      <span>Rising Cost of Living</span>
+      <span>Corruption</span>
+      <span>Crime & Safety</span>
+      <span>Education Crisis</span>
+      <span>Load Shedding</span>
+      <span>32% Unemployment</span>
+      <span>Water Shortages</span>
+      <span>Rising Cost of Living</span>
+      <span>Corruption</span>
+      <span>Crime & Safety</span>
+      <span>Education Crisis</span>
+    </div>
+  </div>
+
+  <!-- ISSUES -->
+  <section class="section" id="issues">
+    <p class="section-label">Key Issues</p>
+    <h2 class="section-title">What's Happening</h2>
+
+    <div class="issues-grid">
+
+      <a href="loadshedding.html" class="issue-card" style="--card-accent: #c0392b;">
+        <span class="issue-icon">⚡</span>
+        <h3 class="issue-name">Load Shedding</h3>
+        <p class="issue-stat">Up to 12hrs/day outages</p>
+        <p class="issue-desc">Eskom's failing grid has plunged South Africa into rolling blackouts for over a decade, crippling businesses and households alike.</p>
+        <span class="issue-card-arrow">→</span>
+      </a>
+
+      <a href="unemployment.html" class="issue-card" style="--card-accent: #e8a020;">
+        <span class="issue-icon">📉</span>
+        <h3 class="issue-name">Unemployment</h3>
+        <p class="issue-stat">~32% official rate</p>
+        <p class="issue-desc">One of the highest unemployment rates in the world. Youth unemployment exceeds 60%, leaving an entire generation without prospects.</p>
+        <span class="issue-card-arrow">→</span>
+      </a>
+
+      <a href="crime.html" class="issue-card" style="--card-accent: #c0392b;">
+        <span class="issue-icon">🔒</span>
+        <h3 class="issue-name">Crime & Safety</h3>
+        <p class="issue-stat">High murder & robbery rates</p>
+        <p class="issue-desc">South Africa consistently ranks among the most dangerous countries globally, with violent crime affecting communities across all provinces.</p>
+        <span class="issue-card-arrow">→</span>
+      </a>
+
+      <a href="corruption.html" class="issue-card" style="--card-accent: #e8a020;">
+        <span class="issue-icon">🏛️</span>
+        <h3 class="issue-name">Corruption</h3>
+        <p class="issue-stat">Billions lost annually</p>
+        <p class="issue-desc">State capture, tender fraud, and institutional corruption have gutted public services and undermined trust in government at every level.</p>
+        <span class="issue-card-arrow">→</span>
+      </a>
+
+      <a href="costofliving.html" class="issue-card" style="--card-accent: #c0392b;">
+        <span class="issue-icon">💸</span>
+        <h3 class="issue-name">Cost of Living</h3>
+        <p class="issue-stat">Inflation squeezing households</p>
+        <p class="issue-desc">Food, fuel and electricity prices continue to rise while wages stagnate, pushing millions deeper into poverty each year.</p>
+        <span class="issue-card-arrow">→</span>
+      </a>
+
+      <a href="water.html" class="issue-card" style="--card-accent: #e8a020;">
+        <span class="issue-icon">💧</span>
+        <h3 class="issue-name">Water Shortages</h3>
+        <p class="issue-stat">Failing municipal infrastructure</p>
+        <p class="issue-desc">Ageing pipes, municipal mismanagement and drought are leaving communities without reliable clean water — a basic human right.</p>
+        <span class="issue-card-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ABOUT STRIP -->
+  <div class="about-strip">
+    <div class="about-quote">
+      "The first step to <em>change</em> is knowing the <em>truth.</em>"
+    </div>
+    <div class="about-body">
+      <p>Reality SA was built because South Africans deserve clear, honest information about what is happening in their country.</p>
+      <p>We compile verified data, reliable sources, and expert analysis — presented plainly, without political bias. Whether you are a student, a voter, or a concerned citizen, this is your starting point.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Reality<span>SA</span></div>
+    <p class="footer-copy">© 2025 Reality SA — For informational purposes only</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+
+    // Close mobile menu on outside click
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
+      if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
+  </script>
+
+</body>
+</html>

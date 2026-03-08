@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Load Shedding — Reality SA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black:  #0a0a0a;
+      --white:  #f4f0e8;
+      --red:    #c0392b;
+      --gold:   #e8a020;
+      --grey:   #1e1e1e;
+      --mid:    #2c2c2c;
+      --muted:  #888;
+      --amber:  #f59e0b;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(1.5rem, 5vw, 4rem);
+      height: 64px;
+      background: rgba(10,10,10,0.94);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--red); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--white); }
+    .nav-links a.active { color: var(--amber); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); transition: all 0.3s;
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 64px; left: 0; right: 0;
+      background: var(--grey);
+      padding: 1.5rem clamp(1.5rem, 5vw, 4rem);
+      z-index: 99;
+      border-bottom: 1px solid #333;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .mobile-menu a:hover { color: var(--white); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 8rem clamp(1.5rem, 5vw, 4rem) clamp(3rem, 6vw, 5rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Flickering power-cut atmosphere */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 55% 60% at 80% 30%, rgba(245,158,11,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 35% 40% at 15% 80%, rgba(192,57,43,0.08) 0%, transparent 60%),
+        linear-gradient(160deg, #0d0c0a 0%, #0a0a0a 60%, #0c0b09 100%);
+      z-index: 0;
+    }
+
+    /* Power line graphic */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      top: 18%; right: 8%;
+      width: 280px; height: 280px;
+      border: 1px solid rgba(245,158,11,0.07);
+      border-radius: 50%;
+      box-shadow:
+        0 0 60px rgba(245,158,11,0.04),
+        inset 0 0 60px rgba(245,158,11,0.03);
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 30%;
+      width: 1px; height: 100%;
+      background: linear-gradient(180deg, transparent 0%, rgba(245,158,11,0.15) 40%, transparent 100%);
+    }
+
+    /* Flicker animation on the accent line */
+    .flicker {
+      position: absolute;
+      top: 0; left: 30%;
+      width: 1px; height: 100%;
+      background: linear-gradient(180deg, transparent, rgba(245,158,11,0.25), transparent);
+      animation: flicker 4s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      48%       { opacity: 1; }
+      50%       { opacity: 0.1; }
+      52%       { opacity: 1; }
+      70%       { opacity: 1; }
+      72%       { opacity: 0.2; }
+      74%       { opacity: 1; }
+    }
+
+    .breadcrumb {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .breadcrumb a {
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumb a:hover { color: var(--white); }
+    .breadcrumb span { color: var(--amber); margin: 0 0.5rem; }
+
+    .hero-issue-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: rgba(245,158,11,0.1);
+      border: 1px solid rgba(245,158,11,0.2);
+      padding: 0.4rem 0.9rem;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.55s 0.05s ease both;
+    }
+
+    .tag-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4.5rem, 14vw, 12rem);
+      line-height: 0.88;
+      letter-spacing: 0.01em;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero-title .dim { color: rgba(244,240,232,0.18); display: block; }
+    .hero-title .bright { color: var(--amber); }
+
+    .hero-desc {
+      margin-top: 2.5rem;
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 300;
+      color: #b0a898;
+      max-width: 580px;
+      line-height: 1.75;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+      margin-top: 3rem;
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .stat-item { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      line-height: 1;
+      color: var(--amber);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #2e2e2e 20%, #2e2e2e 80%, transparent);
+      margin: 0 clamp(1.5rem, 5vw, 4rem);
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: clamp(4rem, 7vw, 6rem) clamp(1.5rem, 5vw, 4rem);
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    /* Main article */
+    .article h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+      margin-bottom: 1.5rem;
+      color: var(--white);
+    }
+
+    .article h2 span { color: var(--amber); }
+
+    .article p {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: #a8a098;
+      margin-bottom: 1.4rem;
+    }
+
+    .article p strong { color: var(--white); font-weight: 500; }
+
+    .article h3 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      margin: 2.5rem 0 1rem;
+    }
+
+    /* Pull quote */
+    .pull-quote {
+      border-left: 3px solid var(--amber);
+      padding: 1.2rem 1.5rem;
+      margin: 2.5rem 0;
+      background: rgba(245,158,11,0.04);
+    }
+
+    .pull-quote p {
+      font-size: 1.15rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--white) !important;
+      line-height: 1.65;
+      margin: 0 !important;
+    }
+
+    /* Timeline */
+    .timeline {
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tl-item {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 1.5rem;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid #1e1e1e;
+      position: relative;
+    }
+
+    .tl-item:last-child { border-bottom: none; }
+
+    .tl-year {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--amber);
+      padding-top: 2px;
+    }
+
+    .tl-text {
+      font-size: 0.92rem;
+      color: #9a9088;
+      line-height: 1.65;
+    }
+
+    .tl-text strong { color: var(--white); display: block; margin-bottom: 0.2rem; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
+
+    .sidebar-card {
+      background: var(--grey);
+      border: 1px solid #2a2a2a;
+      padding: 1.5rem;
+    }
+
+    .sidebar-card-title {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    /* Stage meter */
+    .stage-meter { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .stage-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .stage-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--muted);
+      width: 60px;
+      flex-shrink: 0;
+    }
+
+    .stage-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: #2a2a2a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .stage-bar {
+      height: 100%;
+      border-radius: 2px;
+      background: var(--bar-color, var(--amber));
+    }
+
+    .stage-val {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      width: 40px;
+      text-align: right;
+    }
+
+    /* Impact list */
+    .impact-list { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
+
+    .impact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.7rem;
+      font-size: 0.88rem;
+      color: #9a9088;
+      line-height: 1.5;
+    }
+
+    .impact-list li::before {
+      content: '→';
+      color: var(--amber);
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      margin-top: 1px;
+    }
+
+    /* ── OTHER ISSUES NAV ── */
+    .issues-nav {
+      padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .issues-nav-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .issues-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1px;
+      background: #1e1e1e;
+      border: 1px solid #1e1e1e;
+    }
+
+    .issue-link {
+      background: var(--grey);
+      padding: 1.4rem 1.6rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.25s;
+      group: true;
+    }
+
+    .issue-link:hover { background: #252525; }
+
+    .issue-link-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .issue-link-icon { font-size: 1.2rem; }
+
+    .issue-link-name {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .issue-link-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .issue-link-arrow {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .issue-link:hover .issue-link-arrow {
+      color: var(--amber);
+      transform: translateX(3px);
+    }
+
+    .issue-link.current {
+      background: rgba(245,158,11,0.06);
+      border-left: 2px solid var(--amber);
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .issue-link.current .issue-link-name { color: var(--amber); }
+    .issue-link.current .issue-link-tag { color: rgba(245,158,11,0.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem clamp(1.5rem, 5vw, 4rem);
+      border-top: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      letter-spacing: 0.05em;
+      color: var(--white);
+    }
+    .footer-logo span { color: var(--red); }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: #444;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .sidebar { order: -1; }
+      .sidebar { flex-direction: row; flex-wrap: wrap; }
+      .sidebar-card { flex: 1 1 260px; }
+    }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .hero-stats { gap: 1.5rem; }
+      .sidebar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Reality<span>SA</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#issues" class="active">Issues</a></li>
+      <li><a href="statistics.html">Statistics</a></li>
+      <li><a href="resources.html">Resources</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#issues" onclick="toggleMenu()">Issues</a>
+    <a href="statistics.html" onclick="toggleMenu()">Statistics</a>
+    <a href="resources.html" onclick="toggleMenu()">Resources</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="flicker"></div>
+
+    <p class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>/</span>
+      <a href="index.html#issues">Issues</a>
+      <span>/</span>
+      Load Shedding
+    </p>
+
+    <div class="hero-issue-tag">
+      <span class="tag-dot"></span>
+      Energy Crisis — Ongoing
+    </div>
+
+    <h1 class="hero-title">
+      <span class="dim">Load</span>
+      <span class="bright">Shedding</span>
+    </h1>
+
+    <p class="hero-desc">
+      South Africa has endured rolling blackouts since 2007. What began as a warning sign 
+      has become a permanent feature of daily life — costing the economy billions and pushing 
+      millions into hardship every year.
+    </p>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">12hrs</span>
+        <span class="stat-label">Max daily outages (Stage 6)</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">R1bn+</span>
+        <span class="stat-label">Daily economic loss</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">2007</span>
+        <span class="stat-label">Year crisis began</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">~40%</span>
+        <span class="stat-label">Eskom capacity unserviceable</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+
+    <!-- ARTICLE -->
+    <article class="article">
+
+      <h2>A Grid on the <span>Brink</span></h2>
+
+      <p>
+        Load shedding — the deliberate, rotational cutting of electricity supply — has become 
+        one of South Africa's most defining and damaging crises. Managed by the state-owned 
+        utility <strong>Eskom</strong>, the national grid is burdened by decades of deferred 
+        maintenance, mismanagement, and corruption that have left the country unable to meet 
+        its own demand for power.
+      </p>
+
+      <p>
+        At its worst, Stage 6 load shedding means households and businesses lose power for 
+        up to <strong>12 hours every day</strong>. Factories halt production. Food spoils. 
+        Medical equipment fails. Petrol station queues stretch around the block as people 
+        wait for the power to run pumps. For the millions who cannot afford generators or 
+        inverters, there is simply darkness.
+      </p>
+
+      <div class="pull-quote">
+        <p>"Load shedding is not just an inconvenience — it is a tax on the poor, a handbrake 
+        on the economy, and a symbol of institutional failure at the highest level."</p>
+      </div>
+
+      <h3>Why Is It Happening?</h3>
+
+      <p>
+        The roots of the crisis lie in decisions made — and not made — over two decades. 
+        During the late 1990s and early 2000s, warnings from engineers that South Africa 
+        needed new power stations were ignored. By 2007, the inevitable happened: <strong>the 
+        grid could no longer keep up with demand.</strong>
+      </p>
+
+      <p>
+        Two new mega-stations, <strong>Medupi</strong> and <strong>Kusile</strong>, were 
+        commissioned to solve the problem. Both projects became symbols of everything wrong 
+        with Eskom — plagued by cost overruns, construction defects, and allegations of 
+        corruption. Medupi cost over R145 billion, more than triple the original budget. 
+        Kusile remains incomplete.
+      </p>
+
+      <p>
+        Meanwhile, the existing coal fleet — which provides roughly <strong>80% of South 
+        Africa's electricity</strong> — has aged and degraded. Breakdowns have become the 
+        norm rather than the exception. Eskom refers to this as "unplanned capacity loss" — 
+        a polite term for a fleet that is falling apart.
+      </p>
+
+      <h3>Timeline of the Crisis</h3>
+
+      <div class="timeline">
+        <div class="tl-item">
+          <span class="tl-year">2007</span>
+          <div class="tl-text">
+            <strong>First major blackouts</strong>
+            South Africa experiences its first widespread load shedding. Government and Eskom 
+            acknowledge the grid is under severe strain.
+          </div>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2008</span>
+          <div class="tl-text">
+            <strong>National emergency declared</strong>
+            Mines shut down. The economy loses an estimated R50 billion. Medupi and Kusile 
+            power stations are approved.
+          </div>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2014</span>
+          <div class="tl-text">
+            <strong>Shedding returns, worse than before</strong>
+            Rolling blackouts resume after a period of relief. Stage 3 becomes a new reality 
+            for South African households.
+          </div>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2019</span>
+          <div class="tl-text">
+            <strong>Stage 6 introduced</strong>
+            South Africa reaches Stage 6 for the first time — the highest level at that point, 
+            meaning up to 6,000 MW removed from the grid simultaneously.
+          </div>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2022</span>
+          <div class="tl-text">
+            <strong>Record-breaking outages</strong>
+            South Africa spends more days in load shedding than not. Stage 6 becomes almost 
+            routine. Economic losses exceed R1 billion per day.
+          </div>
+        </div>
+        <div class="tl-item">
+          <span class="tl-year">2023–24</span>
+          <div class="tl-text">
+            <strong>Gradual improvement</strong>
+            Private solar investment surges. Eskom reports some maintenance progress. 
+            Load shedding begins to ease but the structural problems remain unresolved.
+          </div>
+        </div>
+      </div>
+
+      <h3>Who Bears the Cost?</h3>
+
+      <p>
+        The burden of load shedding falls heaviest on those who can least afford it. 
+        <strong>Wealthy households</strong> invest in solar panels, battery backups, and 
+        generators. <strong>Poor households</strong> — often in townships and rural areas — 
+        endure the darkness with nothing to cushion the blow.
+      </p>
+
+      <p>
+        Small businesses have been devastated. Restaurants discard spoiled stock. Informal 
+        traders cannot operate equipment. Barbershops and salons close mid-appointment. 
+        The cumulative economic damage to the small business sector runs into the hundreds 
+        of billions of rands.
+      </p>
+
+      <p>
+        For students, load shedding disrupts study time, makes internet access unreliable, 
+        and widens the gap between those with resources and those without. 
+        <strong>South Africa's education crisis is being deepened by its energy crisis.</strong>
+      </p>
+
+    </article>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Load Shedding Stages</div>
+        <div class="stage-meter">
+          <div class="stage-row">
+            <span class="stage-label">Stage 1</span>
+            <div class="stage-bar-wrap">
+              <div class="stage-bar" style="width:16%; --bar-color:#4ade80;"></div>
+            </div>
+            <span class="stage-val">1000MW</span>
+          </div>
+          <div class="stage-row">
+            <span class="stage-label">Stage 2</span>
+            <div class="stage-bar-wrap">
+              <div class="stage-bar" style="width:32%; --bar-color:#a3e635;"></div>
+            </div>
+            <span class="stage-val">2000MW</span>
+          </div>
+          <div class="stage-row">
+            <span class="stage-label">Stage 3</span>
+            <div class="stage-bar-wrap">
+              <div class="stage-bar" style="width:48%; --bar-color:#facc15;"></div>
+            </div>
+            <span class="stage-val">3000MW</span>
+          </div>
+          <div class="stage-row">
+            <span class="stage-label">Stage 4</span>
+            <div class="stage-bar-wrap">
+              <div class="stage-bar" style="width:64%; --bar-color:#fb923c;"></div>
+            </div>
+            <span class="stage-val">4000MW</span>
+          </div>
+          <div class="stage-row">
+            <span class="stage-label">Stage 5</span>
+            <div class="stage-bar-wrap">
+              <div class="stage-bar" style="width:80%; --bar-color:#f97316;"></div>
+            </div>
+            <span class="stage-val">5000MW</span>
+          </div>
+          <div class="stage-row">
+            <span class="stage-label">Stage 6</span>
+            <div class="stage-bar-wrap">
+              <div class="stage-bar" style="width:96%; --bar-color:#ef4444;"></div>
+            </div>
+            <span class="stage-val">6000MW</span>
+          </div>
+        </div>
+        <p style="font-family: var(--font-mono); font-size: 0.62rem; color: var(--muted); margin-top: 1rem; letter-spacing: 0.08em;">
+          Each stage = MW of capacity removed from the grid simultaneously
+        </p>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Who Is Affected</div>
+        <ul class="impact-list">
+          <li>Households — food spoilage, no heating or cooling</li>
+          <li>Small businesses — lost trading hours, spoiled stock</li>
+          <li>Schools — disrupted lessons and exams</li>
+          <li>Hospitals — reliance on costly backup generators</li>
+          <li>Water pumping stations — secondary water shortages</li>
+          <li>Farms — irrigation failures, livestock losses</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Key Numbers</div>
+        <ul class="impact-list">
+          <li>R1bn+ estimated daily economic loss at Stage 6</li>
+          <li>Over 200 days of load shedding in 2022 alone</li>
+          <li>R145bn+ spent on Medupi — over 3× original budget</li>
+          <li>~80% of SA electricity still generated by coal</li>
+          <li>Solar installations grew by 400%+ in 2022–23</li>
+        </ul>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- OTHER ISSUES NAV -->
+  <section class="issues-nav">
+    <p class="issues-nav-label">Explore Other Issues</p>
+    <div class="issues-nav-grid">
+
+      <a href="loadshedding.html" class="issue-link current">
+        <div class="issue-link-left">
+          <span class="issue-link-icon">⚡</span>
+          <div>
+            <div class="issue-link-name">Load Shedding</div>
+            <div class="issue-link-tag">You are here</div>
+          </div>
+        </div>
+        <span class="issue-link-arrow">—</span>
+      </a>
+
+      <a href="unemployment.html" class="issue-link">
+        <div class="issue-link-left">
+          <span class="issue-link-icon">📉</span>
+          <div>
+            <div class="issue-link-name">Unemployment</div>
+            <div class="issue-link-tag">~32% official rate</div>
+          </div>
+        </div>
+        <span class="issue-link-arrow">→</span>
+      </a>
+
+      <a href="crime.html" class="issue-link">
+        <div class="issue-link-left">
+          <span class="issue-link-icon">🔒</span>
+          <div>
+            <div class="issue-link-name">Crime & Safety</div>
+            <div class="issue-link-tag">High violent crime</div>
+          </div>
+        </div>
+        <span class="issue-link-arrow">→</span>
+      </a>
+
+      <a href="corruption.html" class="issue-link">
+        <div class="issue-link-left">
+          <span class="issue-link-icon">🏛️</span>
+          <div>
+            <div class="issue-link-name">Corruption</div>
+            <div class="issue-link-tag">Billions lost annually</div>
+          </div>
+        </div>
+        <span class="issue-link-arrow">→</span>
+      </a>
+
+      <a href="costofliving.html" class="issue-link">
+        <div class="issue-link-left">
+          <span class="issue-link-icon">💸</span>
+          <div>
+            <div class="issue-link-name">Cost of Living</div>
+            <div class="issue-link-tag">Rising inflation</div>
+          </div>
+        </div>
+        <span class="issue-link-arrow">→</span>
+      </a>
+
+      <a href="water.html" class="issue-link">
+        <div class="issue-link-left">
+          <span class="issue-link-icon">💧</span>
+          <div>
+            <div class="issue-link-name">Water Shortages</div>
+            <div class="issue-link-tag">Infrastructure failure</div>
+          </div>
+        </div>
+        <span class="issue-link-arrow">→</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Reality<span>SA</span></div>
+    <p class="footer-copy">© 2025 Reality SA — For informational purposes only</p>
+  </footer>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('mobileMenu');
+      const hamburger = document.querySelector('.hamburger');
+      if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+        menu.classList.remove('open');
+      }
+    });
+  </script>
+
+</body>
+</html>
