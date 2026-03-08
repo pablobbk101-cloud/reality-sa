@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Me — Mr EchoPoint | Reality SA</title>
+  <style>
+/* ============================================================
+   REALITY SA — style.css
+   Complete shared stylesheet — matches homepage aesthetic exactly
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Mono:wght@400;500&display=swap');
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ── */
+:root {
+  --black:        #0a0a0a;
+  --white:        #f4f0e8;
+  --red:          #c0392b;
+  --gold:         #e8a020;
+  --grey:         #1e1e1e;
+  --mid:          #2c2c2c;
+  --muted:        #888;
+  --body-muted:   #a8a098;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --font-mono:    'DM Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 clamp(1.5rem, 5vw, 4rem);
+  height: 64px;
+  background: rgba(10,10,10,0.93);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #1e1e1e;
+  transition: border-color 0.3s;
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.05em;
+  color: var(--white);
+  text-decoration: none;
+  line-height: 1;
+}
+.nav-logo span { color: var(--red); }
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover,
+.nav-links a.active { color: var(--white); }
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.hamburger span {
+  display: block;
+  width: 24px; height: 2px;
+  background: var(--white);
+  transition: all 0.3s;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 64px; left: 0; right: 0;
+  background: var(--grey);
+  padding: 1.5rem clamp(1.5rem, 5vw, 4rem);
+  z-index: 99;
+  border-bottom: 1px solid #2a2a2a;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.mobile-menu a:hover { color: var(--white); }
+
+/* ══════════════════════════════════════
+   TICKER
+══════════════════════════════════════ */
+.ticker-wrap {
+  overflow: hidden;
+  background: var(--red);
+  padding: 0.6rem 0;
+  white-space: nowrap;
+}
+.ticker-inner {
+  display: inline-flex;
+  animation: ticker 28s linear infinite;
+}
+.ticker-inner span {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0 3rem;
+  color: rgba(255,255,255,0.9);
+}
+.ticker-inner span::before { content: '▸ '; }
+
+/* ══════════════════════════════════════
+   PAGE HEADER — inner page hero
+══════════════════════════════════════ */
+.page-header {
+  min-height: 52vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(6rem, 12vw, 9rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 5vw, 4rem);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.page-header-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 55% at 75% 35%, rgba(192,57,43,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 50% at 15% 75%, rgba(232,160,32,0.06) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0a0a 0%, #111 100%);
+  z-index: 0;
+}
+.page-header-bg::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 18%;
+  width: 1px; height: 100%;
+  background: linear-gradient(180deg, transparent, rgba(192,57,43,0.3), transparent);
+}
+
+.page-header-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1.2rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.5s ease both;
+}
+
+.page-title {
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
+  color: var(--white);
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.55s 0.08s ease both;
+}
+.page-title .accent { color: var(--red); }
+.page-title .gold   { color: var(--gold); }
+
+.page-subtitle {
+  margin-top: 1.5rem;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-weight: 300;
+  color: var(--body-muted);
+  max-width: 560px;
+  line-height: 1.75;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.55s 0.15s ease both;
+}
+
+/* ══════════════════════════════════════
+   ARTICLE HEADER
+══════════════════════════════════════ */
+.article-header {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(6rem, 12vw, 9rem) clamp(1.5rem, 5vw, 4rem) clamp(3rem, 5vw, 4rem);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+.article-header-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 50% at 80% 30%, rgba(192,57,43,0.11) 0%, transparent 70%),
+    radial-gradient(ellipse 35% 55% at 10% 80%, rgba(232,160,32,0.06) 0%, transparent 60%),
+    linear-gradient(160deg, #0d0c0a 0%, #0a0a0a 60%, #0c0b09 100%);
+  z-index: 0;
+}
+.article-header-bg::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 20%;
+  width: 1px; height: 100%;
+  background: linear-gradient(180deg, transparent, rgba(192,57,43,0.25), transparent);
+}
+
+.article-category {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.5s ease both;
+}
+
+.article-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 8vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.55s 0.08s ease both;
+}
+
+.article-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.55s 0.15s ease both;
+}
+
+/* ══════════════════════════════════════
+   ARTICLE BODY
+══════════════════════════════════════ */
+.article-body {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+}
+
+.article-body h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: 0.03em;
+  line-height: 1.05;
+  margin: 2.5rem 0 1.2rem;
+  color: var(--white);
+}
+
+.article-body p {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--body-muted);
+  margin-bottom: 1.5rem;
+}
+.article-body strong { color: var(--white); font-weight: 500; }
+.article-body em     { color: var(--gold); font-style: italic; }
+
+.article-highlight {
+  border-left: 3px solid var(--red);
+  background: rgba(192,57,43,0.06);
+  padding: 1.4rem 1.6rem;
+  margin: 2.5rem 0;
+  font-size: 1.1rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1.7;
+}
+.article-highlight.gold-accent {
+  border-left-color: var(--gold);
+  background: rgba(232,160,32,0.06);
+}
+
+.article-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid #1e1e1e;
+  text-align: center;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  text-decoration: none;
+  transition: gap 0.2s, color 0.2s;
+}
+.back-link:hover        { color: var(--white); gap: 0.8rem; }
+.back-link.gold         { color: var(--gold); }
+.back-link.gold:hover   { color: var(--white); }
+
+/* ══════════════════════════════════════
+   PAGE CONTENT — about / hot-topics
+══════════════════════════════════════ */
+.page-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+}
+.page-content h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  letter-spacing: 0.03em;
+  margin: 2.5rem 0 1.2rem;
+  color: var(--white);
+}
+.page-content p {
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--body-muted);
+  margin-bottom: 1.4rem;
+}
+.page-content strong { color: var(--white); font-weight: 500; }
+.page-content em     { color: var(--gold); font-style: italic; }
+
+/* ══════════════════════════════════════
+   VALUE CARDS — about page
+══════════════════════════════════════ */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  background: #1e1e1e;
+  border: 1px solid #1e1e1e;
+  margin: 2rem 0;
+}
+.value-card {
+  background: var(--grey);
+  padding: 2rem;
+  border-left: 3px solid var(--red);
+  transition: background 0.25s;
+}
+.value-card:hover { background: #252525; }
+.value-icon  { font-size: 2rem; margin-bottom: 1rem; display: block; }
+.value-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.8rem;
+  color: var(--white);
+}
+.value-desc { font-size: 0.92rem; color: var(--muted); line-height: 1.65; }
+
+/* ══════════════════════════════════════
+   TOPIC CARDS — hot-topics page
+══════════════════════════════════════ */
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1px;
+  background: #1e1e1e;
+  border: 1px solid #1e1e1e;
+  margin-top: 2rem;
+}
+.topic-card {
+  background: var(--grey);
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s, transform 0.2s;
+}
+.topic-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 3px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.topic-card:hover { background: #252525; transform: translateY(-2px); }
+.topic-card:hover::before { transform: scaleX(1); }
+
+.cat-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.4rem;
+}
+.topic-date {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+.topic-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.8rem;
+  color: var(--white);
+  line-height: 1.05;
+  transition: color 0.2s;
+}
+.topic-card:hover .topic-title { color: var(--gold); }
+.topic-desc { font-size: 0.92rem; color: var(--muted); line-height: 1.65; }
+
+/* ══════════════════════════════════════
+   SECTION
+══════════════════════════════════════ */
+.section { padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 5vw, 4rem); }
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.8rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1;
+  margin-bottom: 3rem;
+}
+
+/* ══════════════════════════════════════
+   ISSUE / OPINION CARDS
+══════════════════════════════════════ */
+.issues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: #1e1e1e;
+  border: 1px solid #1e1e1e;
+}
+.issue-card {
+  background: var(--grey);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.25s, transform 0.2s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+.issue-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 100%; height: 3px;
+  background: var(--card-accent, var(--red));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.issue-card:hover { background: #252525; transform: translateY(-2px); }
+.issue-card:hover::before { transform: scaleX(1); }
+.issue-icon  { font-size: 2rem; margin-bottom: 1.2rem; display: block; }
+.issue-name  { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: 0.03em; margin-bottom: 0.4rem; color: var(--white); }
+.issue-stat  { font-family: var(--font-mono); font-size: 0.7rem; color: var(--card-accent, var(--red)); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+.issue-desc  { font-size: 0.9rem; color: var(--muted); line-height: 1.65; padding-bottom: 1.5rem; }
+.issue-card-arrow {
+  position: absolute;
+  bottom: 1.4rem; right: 1.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--card-accent, var(--red));
+  transition: transform 0.2s;
+}
+.issue-card:hover .issue-card-arrow { transform: translateX(4px); }
+
+/* ══════════════════════════════════════
+   ABOUT STRIP
+══════════════════════════════════════ */
+.about-strip {
+  background: var(--grey);
+  border-top: 1px solid #2a2a2a;
+  border-bottom: 1px solid #2a2a2a;
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+.about-quote { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 3rem); line-height: 1.1; color: var(--white); }
+.about-quote em { font-style: normal; color: var(--gold); }
+.about-body { font-size: 0.95rem; color: var(--muted); line-height: 1.75; }
+.about-body p + p { margin-top: 1rem; }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  padding: 2.5rem clamp(1.5rem, 5vw, 4rem);
+  border-top: 1px solid #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 0.05em; color: var(--white); }
+.footer-logo span { color: var(--red); }
+.footer-copy { font-family: var(--font-mono); font-size: 0.65rem; color: #444; letter-spacing: 0.1em; text-transform: uppercase; }
+
+/* ══════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  font-weight: 500;
+}
+.btn:hover { transform: translateY(-2px); }
+.btn-primary { background: var(--red); color: var(--white); box-shadow: 0 4px 24px rgba(192,57,43,0.35); }
+.btn-primary:hover { box-shadow: 0 8px 32px rgba(192,57,43,0.55); }
+.btn-secondary { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+.btn-secondary:hover { background: rgba(232,160,32,0.08); }
+
+/* ══════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+  .nav-links   { display: none; }
+  .hamburger   { display: flex; }
+  .about-strip { grid-template-columns: 1fr; gap: 2rem; }
+}
+@media (max-width: 540px) {
+  .values-grid { grid-template-columns: 1fr; }
+  .topics-grid { grid-template-columns: 1fr; }
+  .issues-grid { grid-template-columns: 1fr; }
+}
+
+  </style>
+  <script>
+/* ============================================================
+   REALITY SA — script.js
+   Shared JavaScript for all pages
+   ============================================================ */
+
+/* ── MOBILE MENU TOGGLE ── */
+function toggleMenu() {
+  const menu = document.getElementById('mobileMenu');
+  if (menu) menu.classList.toggle('open');
+}
+
+/* ── CLOSE MOBILE MENU ON OUTSIDE CLICK ── */
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('mobileMenu');
+  const hamburger = document.querySelector('.hamburger');
+  if (!menu || !hamburger) return;
+  if (!menu.contains(e.target) && !hamburger.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
+
+/* ── CLOSE MOBILE MENU ON ESCAPE KEY ── */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const menu = document.getElementById('mobileMenu');
+    if (menu) menu.classList.remove('open');
+  }
+});
+
+/* ── NAV SCROLL SHADOW ── */
+window.addEventListener('scroll', () => {
+  const nav = document.querySelector('nav');
+  if (!nav) return;
+  if (window.scrollY > 20) {
+    nav.style.borderBottomColor = '#2a2a2a';
+  } else {
+    nav.style.borderBottomColor = '#1e1e1e';
+  }
+});
+
+/* ── FADE-UP ANIMATION ON SCROLL ── */
+// Adds the 'visible' class to elements with data-animate="fadeUp"
+// when they enter the viewport. Use in HTML like:
+//   <div data-animate="fadeUp"> ... </div>
+// And add this CSS to your page's <style>:
+//   [data-animate] { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+//   [data-animate].visible { opacity: 1; transform: translateY(0); }
+
+const animatedEls = document.querySelectorAll('[data-animate]');
+
+if (animatedEls.length > 0) {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // only animate once
+      }
+    });
+  }, { threshold: 0.12 });
+
+  animatedEls.forEach((el) => observer.observe(el));
+}
+
+  </script>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">Reality<span>SA</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#opinions">My Commentary</a></li>
+      <li><a href="index.html#featured">Latest Take</a></li>
+      <li><a href="hot-topics.html">Trending</a></li>
+      <li><a href="about.html" class="active">About Me</a></li>
+    </ul>
+    <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#opinions" onclick="toggleMenu()">My Commentary</a>
+    <a href="index.html#featured" onclick="toggleMenu()">Latest Take</a>
+    <a href="hot-topics.html" onclick="toggleMenu()">Trending</a>
+    <a href="about.html" onclick="toggleMenu()">About Me</a>
+  </div>
+
+  <header class="page-header">
+    <div class="page-header-bg"></div>
+    <p class="page-header-tag">Commentary • Opinion • One Voice</p>
+    <h1 class="page-title">About <span class="accent">Mr</span><br><span class="gold">EchoPoint.</span></h1>
+    <p class="page-subtitle">One person's informed take on what's happening in South Africa. Unfiltered. Research-backed. Unapologetically opinionated.</p>
+  </header>
+
+  <div class="ticker-wrap" aria-hidden="true">
+    <div class="ticker-inner">
+      <span>Where is our electricity?</span><span>Corruption's deadly grip</span><span>Youth have no future</span><span>Women aren't safe</span><span>Inflation is killing us</span><span>Who's running the country?</span><span>Water is our crisis</span><span>Where is our electricity?</span><span>Corruption's deadly grip</span><span>Youth have no future</span><span>Women aren't safe</span><span>Inflation is killing us</span><span>Who's running the country?</span><span>Water is our crisis</span>
+    </div>
+  </div>
+
+  <div class="page-content">
+
+    <h2>Who I Am</h2>
+    <p>I'm Mr EchoPoint. I'm someone who cares about what's happening in South Africa and isn't afraid to voice my thoughts about it.</p>
+    <p>I pay attention to policy changes, economic trends, crime statistics, and political developments. I share my perspective on what it all means—for the country and for people living in it.</p>
+    <p>This is a personal commentary platform. The opinions here are mine. They're informed by research, observation, and engagement with the issues, but they're not neutral—<strong>I don't pretend they are.</strong></p>
+
+    <h2>What I Stand For</h2>
+
+    <div class="values-grid">
+      <div class="value-card">
+        <span class="value-icon">🎯</span>
+        <div class="value-title">Honesty</div>
+        <p class="value-desc">I say what I think. Not to shock. Not for controversy. But because I believe clarity matters more than diplomatic silence.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🔍</span>
+        <div class="value-title">Research-Backed</div>
+        <p class="value-desc">My opinions aren't guesses. They're built on data, news, expert insights, and actual engagement with the issues I discuss.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">⚖️</span>
+        <div class="value-title">Fair Critique</div>
+        <p class="value-desc">I criticize policies and people across political lines. Not because I'm "balanced," but because bad governance deserves criticism wherever it comes from.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">🌍</span>
+        <div class="value-title">South Africa First</div>
+        <p class="value-desc">My focus is on what's best for the country and the people in it. Everything else—politics, factional interest—comes second.</p>
+      </div>
+    </div>
+
+    <h2>What You'll Find Here</h2>
+    <p><strong>Featured Takes:</strong> Deep dives into major issues. Well-researched analysis of the problems I think deserve attention.</p>
+    <p><strong>Commentary:</strong> Shorter pieces responding to current events, news, and important developments. My immediate reactions and analysis.</p>
+    <p><strong>Trending:</strong> Issues I'm keeping an eye on, even if they're not getting mainstream coverage. The stories I think matter.</p>
+
+    <h2>What This Isn't</h2>
+    <p>I'm not a news organization. I'm not breaking stories. I'm not trying to be neutral or objective—that's not the point. I'm offering <em>one person's analysis and perspective</em> on what I see happening.</p>
+    <p>This is commentary. It's subjective. It's informed, but it's still personal. And I think that's valuable—one voice, clearly identified as such, making sense of current events.</p>
+
+    <h2>Join The Conversation</h2>
+    <p>You don't need to agree with my takes. In fact, I hope you engage with them. You think I'm wrong about something? Tell me. You have a different perspective? I'd like to hear it.</p>
+    <p>Thanks for reading. <strong>Stay critical.</strong></p>
+
+    <a href="index.html" class="back-link">← Back to Home</a>
+
+  </div>
+
+  <footer>
+    <div class="footer-logo">Mr Echo<span>Point</span></div>
+    <p class="footer-copy">© 2026 Reality SA — By BBK Low Budget Productions</p>
+  </footer>
+
+</body>
+</html>
