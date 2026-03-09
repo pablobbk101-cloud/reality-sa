@@ -705,7 +705,7 @@
         <button class="debate-tab" onclick="switchTab(this, 'suggest-topic')">📌 Suggest a Topic</button>
       </div>
       <div class="debate-form-wrap active" id="debate-me">
-        <form name="debate-me" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="debate-form" onsubmit="handleFormSubmit(event, this)">
+        <form name="debate-me" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="debate-form">
           <input type="hidden" name="form-name" value="debate-me" />
           <p class="hidden"><label>Don't fill this out: <input name="bot-field" /></label></p>
           <div class="form-row">
@@ -730,7 +730,7 @@
         </form>
       </div>
       <div class="debate-form-wrap" id="my-thoughts">
-        <form name="share-thoughts" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="debate-form" onsubmit="handleFormSubmit(event, this)">
+        <form name="share-thoughts" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="debate-form">
           <input type="hidden" name="form-name" value="share-thoughts" />
           <p class="hidden"><label>Don't fill this out: <input name="bot-field" /></label></p>
           <div class="form-row">
@@ -751,7 +751,7 @@
         </form>
       </div>
       <div class="debate-form-wrap" id="suggest-topic">
-        <form name="suggest-topic" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="debate-form" onsubmit="handleFormSubmit(event, this)">
+        <form name="suggest-topic" method="POST" action="/thank-you.html" data-netlify="true" netlify-honeypot="bot-field" class="debate-form">
           <input type="hidden" name="form-name" value="suggest-topic" />
           <p class="hidden"><label>Don't fill this out: <input name="bot-field" /></label></p>
           <div class="form-row">
@@ -1050,7 +1050,7 @@
 
   <script>
     function switchTab(btn,tabId){document.querySelectorAll('.debate-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));btn.classList.add('active');document.getElementById(tabId).classList.add('active');document.getElementById('debate-success').style.display='none';}
-    function handleFormSubmit(e,form){e.preventDefault();const data=new FormData(form);fetch('/',{method:'POST',body:data}).then(()=>{document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));document.getElementById('debate-success').style.display='block';}).catch(()=>{document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));document.getElementById('debate-success').style.display='block';});}
+    ).then(()=>{document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));document.getElementById('debate-success').style.display='block';}).catch(()=>{document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));document.getElementById('debate-success').style.display='block';});}
     function resetForm(){document.getElementById('debate-success').style.display='none';document.getElementById('debate-me').classList.add('active');document.querySelector('.debate-tab').classList.add('active');}
     function selectAmount(btn,amount){document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('customAmount').value='';}
     function selectMethod(btn){document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
