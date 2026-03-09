@@ -1049,12 +1049,34 @@
 
 
   <script>
-    function switchTab(btn,tabId){document.querySelectorAll('.debate-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));btn.classList.add('active');document.getElementById(tabId).classList.add('active');document.getElementById('debate-success').style.display='none';}
-    ).then(()=>{document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));document.getElementById('debate-success').style.display='block';}).catch(()=>{document.querySelectorAll('.debate-form-wrap').forEach(f=>f.classList.remove('active'));document.getElementById('debate-success').style.display='block';});}
-    function resetForm(){document.getElementById('debate-success').style.display='none';document.getElementById('debate-me').classList.add('active');document.querySelector('.debate-tab').classList.add('active');}
-    function selectAmount(btn,amount){document.querySelectorAll('.amount-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('customAmount').value='';}
-    function selectMethod(btn){document.querySelectorAll('.method-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
-    function handleDonate(){const active=document.querySelector('.amount-btn.active');const custom=document.getElementById('customAmount').value;const amount=custom||(active?active.textContent:'R100');const method=document.querySelector('.method-btn.active')?.textContent||'PayPal';alert('Thank you for supporting Reality SA!\n\nAmount: '+amount+'\nMethod: '+method+'\n\nPayment integration coming soon.');}
+    function switchTab(btn, tabId) {
+      document.querySelectorAll('.debate-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.debate-form-wrap').forEach(f => f.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      document.getElementById('debate-success').style.display = 'none';
+    }
+    function resetForm() {
+      document.getElementById('debate-success').style.display = 'none';
+      document.getElementById('debate-me').classList.add('active');
+      document.querySelector('.debate-tab').classList.add('active');
+    }
+    function selectAmount(btn, amount) {
+      document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('customAmount').value = '';
+    }
+    function selectMethod(btn) {
+      document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    function handleDonate() {
+      const active = document.querySelector('.amount-btn.active');
+      const custom = document.getElementById('customAmount').value;
+      const amount = custom || (active ? active.textContent : 'R100');
+      const method = document.querySelector('.method-btn.active')?.textContent || 'PayPal';
+      alert('Thank you for supporting Reality SA!\n\nAmount: ' + amount + '\nMethod: ' + method + '\n\nPayment integration coming soon.');
+    }
   </script>
 
   <script>
