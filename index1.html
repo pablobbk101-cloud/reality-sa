@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EchoPoint — Just Talking</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:     #1e2128;
+      --bg-2:   #252930;
+      --ink:    #e8e6e0;
+      --mid:    #a8a49e;
+      --muted:  #6a6860;
+      --accent: #e8875a;
+      --alt:    #2e333c;
+      --line:   rgba(255,255,255,0.08);
+      --font-display: 'Fraunces', serif;
+      --font-ui:      'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --max-w: 1100px;
+      --pad: clamp(1.5rem,5vw,4rem);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 var(--pad); height: 64px;
+      background: rgba(30,33,40,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+    }
+    nav.scrolled { border-bottom-color: var(--line); }
+    .nav-logo { font-family: var(--font-ui); font-weight: 800; font-size: 1.15rem; color: var(--ink); text-decoration: none; letter-spacing: -0.02em; }
+    .nav-logo span { color: var(--accent); }
+    .nav-tag {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--accent); background: var(--alt);
+      border: 1px solid rgba(212,82,42,0.2);
+      padding: 0.22rem 0.6rem; border-radius: 2px;
+    }
+    .nav-right { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: var(--font-mono); font-size: 0.72rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-switch {
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: color 0.2s;
+    }
+    .nav-switch:hover { color: var(--accent); }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); }
+    .mobile-menu {
+      display: none; position: fixed; top: 64px; left: 0; right: 0;
+      background: #1e2128; border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 1.5rem var(--pad); z-index: 99;
+      flex-direction: column; gap: 1.25rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-mono); font-size: 0.8rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      padding: 8rem var(--pad) 5rem;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -20%; right: -10%;
+      width: 60vw; height: 60vw;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(232,135,90,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .ep-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); background: var(--alt);
+      padding: 0.35rem 0.75rem; border-radius: 2px;
+      margin-bottom: 2rem; width: fit-content;
+    }
+    .ep-badge::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--accent); border-radius: 50%;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.4; transform:scale(0.8); }
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(4rem,10vw,8rem);
+      font-weight: 300; line-height: 0.92;
+      letter-spacing: -0.03em; color: var(--ink);
+      margin-bottom: 1.5rem; max-width: 700px;
+    }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-sub {
+      font-size: clamp(0.95rem,2vw,1.15rem);
+      color: var(--mid); line-height: 1.75;
+      max-width: 480px; margin-bottom: 2.5rem;
+      font-family: var(--font-display); font-weight: 300;
+    }
+    .hero-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      background: var(--ink); color: var(--bg);
+      font-family: var(--font-mono); font-size: 0.75rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.85rem 1.75rem; text-decoration: none;
+      border-radius: 2px; transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-1px); }
+    .btn-ghost {
+      font-family: var(--font-mono); font-size: 0.75rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--mid); text-decoration: none;
+      border-bottom: 1px solid var(--line); padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--accent); border-color: var(--accent); }
+    /* ── EQUALIZER — full hero background ── */
+    .hero-eq {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 220px;
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      padding: 0 var(--pad);
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .eq-bar {
+      flex: 1;
+      min-width: 4px;
+      max-width: 14px;
+      border-radius: 2px 2px 0 0;
+      transform-origin: bottom;
+      animation: eq-dance var(--spd, 1.2s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      opacity: 0;
+      animation-fill-mode: both;
+    }
+    /* bars fade in staggered on load */
+    @keyframes eq-fadein {
+      from { opacity: 0; transform: scaleY(0); }
+      to   { opacity: var(--op, 0.18); }
+    }
+
+    /* each bar gets a unique dance pattern */
+    .eq-bar:nth-child(5n+1)  { animation-name: eq-a; }
+    .eq-bar:nth-child(5n+2)  { animation-name: eq-b; }
+    .eq-bar:nth-child(5n+3)  { animation-name: eq-c; }
+    .eq-bar:nth-child(5n+4)  { animation-name: eq-d; }
+    .eq-bar:nth-child(5n+5)  { animation-name: eq-e; }
+
+    @keyframes eq-a {
+      0%,100% { height: var(--h-lo); opacity: var(--op-lo); }
+      30%     { height: var(--h-hi); opacity: var(--op-hi); }
+      60%     { height: calc(var(--h-lo) * 1.4); opacity: calc(var(--op-lo) * 1.3); }
+    }
+    @keyframes eq-b {
+      0%,100% { height: calc(var(--h-hi) * 0.6); opacity: var(--op-hi); }
+      45%     { height: var(--h-hi); opacity: var(--op-hi); }
+      75%     { height: var(--h-lo); opacity: var(--op-lo); }
+    }
+    @keyframes eq-c {
+      0%,100% { height: var(--h-lo); opacity: var(--op-lo); }
+      20%     { height: calc(var(--h-hi) * 0.5); opacity: calc(var(--op-hi) * 0.7); }
+      50%     { height: var(--h-hi); opacity: var(--op-hi); }
+      80%     { height: calc(var(--h-lo) * 1.6); opacity: calc(var(--op-lo) * 1.4); }
+    }
+    @keyframes eq-d {
+      0%,100% { height: calc(var(--h-hi) * 0.4); opacity: var(--op-lo); }
+      35%     { height: calc(var(--h-hi) * 0.9); opacity: var(--op-hi); }
+      65%     { height: calc(var(--h-lo) * 1.2); opacity: calc(var(--op-lo) * 1.2); }
+    }
+    @keyframes eq-e {
+      0%,100% { height: calc(var(--h-lo) * 1.3); opacity: calc(var(--op-lo) * 1.1); }
+      25%     { height: calc(var(--h-hi) * 0.7); opacity: calc(var(--op-hi) * 0.8); }
+      55%     { height: var(--h-hi); opacity: var(--op-hi); }
+      80%     { height: var(--h-lo); opacity: var(--op-lo); }
+    }
+
+    /* gradient fade at top of eq */
+    .hero-eq::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 60%;
+      background: linear-gradient(to bottom, var(--bg), transparent);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ── MINI EQ badge — shown next to episode title ── */
+    .mini-eq {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 16px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+    .mini-eq span {
+      display: block;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 1px;
+      transform-origin: bottom;
+      animation: mini-dance 1s ease-in-out infinite;
+    }
+    .mini-eq span:nth-child(1){ height:6px;  animation-delay:0s; }
+    .mini-eq span:nth-child(2){ height:12px; animation-delay:0.15s; }
+    .mini-eq span:nth-child(3){ height:9px;  animation-delay:0.3s; }
+    .mini-eq span:nth-child(4){ height:14px; animation-delay:0.1s; }
+    .mini-eq span:nth-child(5){ height:7px;  animation-delay:0.25s; }
+    @keyframes mini-dance {
+      0%,100%{ transform:scaleY(0.35); }
+      50%    { transform:scaleY(1); }
+    }
+
+    /* SHARED */
+    .section-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad); }
+    .section-label {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .section-label::after { content:''; flex:0 0 32px; height:1px; background:var(--line); }
+
+    /* LATEST EPISODE */
+    .latest-section {
+      background: #252930; padding: 5rem 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .latest-card {
+      display: grid; grid-template-columns: 220px 1fr;
+      gap: 3rem; background: #1e2128;
+      border: 1px solid var(--line); padding: 2.5rem;
+    }
+    .latest-art {
+      aspect-ratio: 1; background: var(--alt);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .latest-art-icon { color: var(--accent); opacity: 0.5; }
+    .latest-art-num {
+      position: absolute; bottom: 0.75rem; right: 1rem;
+      font-family: var(--font-display); font-size: 3rem;
+      font-weight: 300; color: var(--accent); opacity: 0.3; line-height: 1;
+    }
+    .ep-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+    .ep-tag {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); background: var(--alt); padding: 0.18rem 0.55rem; border-radius: 2px;
+    }
+    .ep-dur, .ep-date { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+    .ep-dur::before { content: '·'; margin-right: 0.4rem; }
+    .ep-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem,3vw,2.4rem);
+      font-weight: 400; letter-spacing: -0.02em;
+      line-height: 1.15; color: var(--ink); margin-bottom: 0.75rem;
+    }
+    .ep-desc {
+      font-family: var(--font-display);
+      font-size: 0.97rem; color: var(--mid);
+      line-height: 1.8; margin-bottom: 1.5rem; font-weight: 300;
+    }
+    .ep-player { display: flex; align-items: center; gap: 1rem; }
+    .play-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--ink); border: none; color: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: background 0.2s, transform 0.15s;
+    }
+    .play-btn:hover { background: var(--accent); transform: scale(1.05); }
+    .prog-bar { flex:1; height:3px; background:var(--line); border-radius:2px; overflow:hidden; }
+    .prog-fill { height:100%; width:0%; background:var(--accent); transition:width 0.1s linear; }
+    .time-disp { font-family:var(--font-mono); font-size:0.65rem; color:var(--muted); white-space:nowrap; }
+
+    /* EPISODES GRID */
+    .episodes-section { padding: 5rem 0; }
+    .eps-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:2rem; }
+    .see-all {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none; transition: color 0.2s;
+    }
+    .see-all:hover { color: var(--accent); }
+    .eps-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 1px; background: var(--line); border: 1px solid var(--line);
+    }
+    .ep-card {
+      background: #1e2128; padding: 1.75rem;
+      display: flex; flex-direction: column; gap: 0.85rem;
+      position: relative; transition: background 0.2s; cursor: pointer;
+    }
+    .ep-card:hover { background: #252930; }
+    .ep-card-num {
+      font-family: var(--font-display); font-size: 2.2rem;
+      font-weight: 300; color: var(--line); line-height: 1;
+    }
+    .ep-card-title {
+      font-family: var(--font-display); font-size: 1.15rem;
+      font-weight: 400; letter-spacing: -0.01em;
+      line-height: 1.25; color: var(--ink);
+    }
+    .ep-card-excerpt { font-family: var(--font-display); font-size: 0.88rem; color: var(--muted); line-height: 1.65; font-weight: 300; }
+    .ep-card-meta {
+      display: flex; gap: 1rem;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      color: var(--muted); margin-top: auto;
+      padding-top: 0.75rem; border-top: 1px solid var(--line);
+    }
+    .ep-card-btn {
+      position: absolute; top: 1.75rem; right: 1.75rem;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: var(--alt); border: none; color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; transition: opacity 0.2s, background 0.2s;
+    }
+    .ep-card:hover .ep-card-btn { opacity: 1; }
+    .ep-card-btn:hover { background: var(--accent); color: var(--bg); }
+
+    /* SUBSCRIBE STRIP */
+    .sub-strip { background: #141720; padding: 4rem 0; }
+    .sub-inner { display: flex; align-items: center; justify-content: space-between; gap: 3rem; flex-wrap: wrap; }
+    .sub-inner .section-label { color: rgba(232,230,224,0.35); }
+    .sub-inner .section-label::after { background: rgba(232,230,224,0.12); }
+    .sub-title { font-family: var(--font-display); font-size: clamp(1.5rem,3vw,2.2rem); font-weight: 300; color: var(--bg); letter-spacing: -0.02em; }
+    .sub-title em { font-style: italic; color: var(--accent); }
+    .sub-platforms { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .plat-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.7rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(232,230,224,0.55); text-decoration: none;
+      border: 1px solid rgba(232,230,224,0.1);
+      padding: 0.6rem 1rem; border-radius: 2px; transition: all 0.2s;
+    }
+    .plat-btn:hover { color: var(--ink); border-color: rgba(232,230,224,0.35); }
+
+    /* FOOTER */
+    .site-footer {
+      background: #141720; border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 3rem 0;
+    }
+    .footer-inner {
+      max-width: var(--max-w); margin: 0 auto; padding: 0 var(--pad);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 1rem; text-align: center;
+    }
+    .footer-switcher {
+      display: flex; align-items: center;
+      background: #252930; border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;
+    }
+    .sw-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); text-decoration: none;
+      padding: 0.65rem 1.4rem; transition: all 0.2s;
+    }
+    .sw-btn:hover, .sw-btn--active { background: var(--ink); color: var(--bg); }
+    .sw-div { width: 1px; height: 36px; background: var(--line); }
+    .footer-logo { font-family: var(--font-ui); font-weight: 800; font-size: 1.2rem; color: var(--ink); letter-spacing: -0.02em; }
+    .footer-logo span { color: var(--accent); }
+    .footer-tagline { font-family: var(--font-display); font-style: italic; font-size: 0.92rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; }
+    .footer-links a { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+    .footer-copy { font-family: var(--font-mono); font-size: 0.6rem; color: var(--muted); opacity: 0.5; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .eps-grid { grid-template-columns: repeat(2,1fr); }
+      .latest-card { grid-template-columns: 1fr; }
+      .latest-art { aspect-ratio: 2/1; }
+    }
+    @media (max-width: 640px) {
+      .eps-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .sub-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="mainNav">
+    <a href="../index.html" class="nav-logo">Echo<span>Point</span></a>
+    <span class="nav-tag">Podcast</span>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="episodes.html">Episodes</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="subscribe.html">Subscribe</a></li>
+      </ul>
+      <a href="../stories/index.html" class="nav-switch">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Switch to Stories
+      </a>
+      <button class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="episodes.html" onclick="toggleMenu()">Episodes</a>
+    <a href="about.html" onclick="toggleMenu()">About</a>
+    <a href="subscribe.html" onclick="toggleMenu()">Subscribe</a>
+    <a href="../stories/index.html" onclick="toggleMenu()">→ Switch to Stories</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="ep-badge">Now Playing · EP. 001</div>
+    <h1 class="hero-title">Just Talking.<br/><em>About Everything.</em></h1>
+    <p class="hero-sub">No agenda. No script. Just one person going deep on whatever topic is living rent-free in their head. New episodes every two weeks.</p>
+    <div class="hero-actions">
+      <a href="episodes.html" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        Listen Now
+      </a>
+      <a href="episodes.html" class="btn-ghost">All Episodes</a>
+    </div>
+    <div class="hero-eq" id="heroEq"></div>
+  </section>
+
+  <!-- LATEST EPISODE -->
+  <section class="latest-section">
+    <div class="section-inner">
+      <div class="section-label">Latest Episode <span class="mini-eq"><span></span><span></span><span></span><span></span><span></span></span></div>
+      <div class="latest-card">
+        <div class="latest-art">
+          <div class="latest-art-icon">
+            <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          </div>
+          <div class="latest-art-num">01</div>
+        </div>
+        <div>
+          <div class="ep-meta">
+            <span class="ep-tag">Random Topic</span>
+            <span class="ep-dur">44 min</span>
+            <span class="ep-date">March 2025</span>
+          </div>
+          <h2 class="ep-title">Why Do We Dream About Falling?</h2>
+          <p class="ep-desc">Nobody asked me to figure this out but here we are. I went down a rabbit hole on sleep science, recurring dreams, and ended up somewhere completely unexpected.</p>
+          <div class="ep-player">
+            <button class="play-btn" onclick="togglePlay(this)">
+              <svg class="i-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="i-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <div class="prog-bar"><div class="prog-fill" id="mainProg"></div></div>
+            <span class="time-disp">00:00 / 44:00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EPISODES -->
+  <section class="episodes-section">
+    <div class="section-inner">
+      <div class="eps-header">
+        <div class="section-label">Episodes</div>
+        <a href="episodes.html" class="see-all">See all →</a>
+      </div>
+      <div class="eps-grid">
+        <article class="ep-card">
+          <div class="ep-card-num">02</div>
+          <span class="ep-tag" style="width:fit-content">Random</span>
+          <h3 class="ep-card-title">Is Déjà Vu Actually Glitching?</h3>
+          <p class="ep-card-excerpt">That weird feeling when a moment feels like a memory. I got obsessed and did too much reading about it.</p>
+          <div class="ep-card-meta"><span>38 min</span><span>Feb 2025</span></div>
+          <button class="ep-card-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        </article>
+        <article class="ep-card">
+          <div class="ep-card-num">03</div>
+          <span class="ep-tag" style="width:fit-content">Random</span>
+          <h3 class="ep-card-title">The Bermuda Triangle of Time</h3>
+          <p class="ep-card-excerpt">Why 3pm on a Tuesday feels like it lasts forever and entire weekends just vanish.</p>
+          <div class="ep-card-meta"><span>55 min</span><span>Jan 2025</span></div>
+          <button class="ep-card-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        </article>
+        <article class="ep-card">
+          <div class="ep-card-num">04</div>
+          <span class="ep-tag" style="width:fit-content">Deep Dive</span>
+          <h3 class="ep-card-title">What Even Is Money Anymore</h3>
+          <p class="ep-card-excerpt">Started thinking about how we assign value to things. Ended up questioning everything. You've been warned.</p>
+          <div class="ep-card-meta"><span>31 min</span><span>Dec 2024</span></div>
+          <button class="ep-card-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBSCRIBE STRIP -->
+  <section class="sub-strip">
+    <div class="section-inner sub-inner">
+      <div>
+        <div class="section-label">Never Miss an Episode</div>
+        <h2 class="sub-title">New topic <em>every two weeks</em></h2>
+      </div>
+      <div class="sub-platforms">
+        <a href="subscribe.html" class="plat-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          Spotify
+        </a>
+        <a href="subscribe.html" class="plat-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Apple
+        </a>
+        <a href="subscribe.html" class="plat-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+          YouTube
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-switcher">
+        <a href="../stories/index.html" class="sw-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          Stories
+        </a>
+        <div class="sw-div"></div>
+        <a href="index.html" class="sw-btn sw-btn--active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13V8l6 4-6 4z"/></svg>
+          Podcast
+        </a>
+      </div>
+      <div class="footer-logo">Echo<span>Point</span></div>
+      <p class="footer-tagline">Any topic. Any time.</p>
+      <div class="footer-links">
+        <a href="../stories/index.html">Stories</a>
+        <a href="episodes.html">Episodes</a>
+        <a href="about.html">About</a>
+        <a href="subscribe.html">Subscribe</a>
+      </div>
+      <p class="footer-copy">© 2025 EchoPoint. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    let playing = false, prog = 0, iv;
+    // Generate equalizer bars
+    const eqEl = document.getElementById('heroEq');
+    const barCount = Math.max(40, Math.floor(window.innerWidth / 10));
+    for (let i = 0; i < barCount; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'eq-bar';
+      const hLo  = 8  + Math.random() * 30;
+      const hHi  = 60 + Math.random() * 140;
+      const opLo = 0.06 + Math.random() * 0.08;
+      const opHi = 0.15 + Math.random() * 0.18;
+      const spd  = (0.8 + Math.random() * 1.8).toFixed(2);
+      const delay = (Math.random() * 3).toFixed(2);
+      const useWhite = Math.random() > 0.75;
+      bar.style.cssText = `
+        --h-lo:${hLo.toFixed(0)}px;
+        --h-hi:${hHi.toFixed(0)}px;
+        --op-lo:${opLo.toFixed(3)};
+        --op-hi:${opHi.toFixed(3)};
+        height:${hLo.toFixed(0)}px;
+        background:${useWhite ? 'rgba(255,255,255,0.55)' : 'var(--accent)'};
+        animation-duration:${spd}s;
+        animation-delay:${delay}s;
+        opacity:${opLo.toFixed(3)};
+      `;
+      eqEl.appendChild(bar);
+    }
+
+    function togglePlay(btn) {
+      playing = !playing;
+      btn.querySelector('.i-play').style.display = playing ? 'none' : 'block';
+      btn.querySelector('.i-pause').style.display = playing ? 'block' : 'none';
+      if (playing) {
+        iv = setInterval(() => {
+          prog += 0.04;
+          if (prog > 100) prog = 0;
+          document.getElementById('mainProg').style.width = prog + '%';
+        }, 100);
+      } else clearInterval(iv);
+    }
+    function toggleMenu() {
+      document.getElementById('mobileMenu').classList.toggle('open');
+    }
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+    });
+  </script>
+</body>
+</html>
