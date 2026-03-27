@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EchoPoint Stories — Fiction & Audio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Syne:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d0b10;
+      --bg-2:     #120f17;
+      --bg-3:     #1a1522;
+      --ink:      #e8e0d0;
+      --muted:    #7a7068;
+      --gold:     #c8a97e;
+      --violet:   #9b6eff;
+      --line:     rgba(255,255,255,0.07);
+      --glow:     rgba(155,110,255,0.15);
+      --font-display: 'Cormorant Garamond', serif;
+      --font-ui:      'Syne', sans-serif;
+      --font-mono:    'DM Mono', monospace;
+      --max-w: 1100px;
+      --pad: clamp(1.5rem, 5vw, 4rem);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-display);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.4;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--pad);
+      height: 64px;
+      background: rgba(13,11,16,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-logo {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo span { color: var(--violet); }
+
+    .nav-side-tag {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(200,169,126,0.1);
+      border: 1px solid rgba(200,169,126,0.2);
+      padding: 0.25rem 0.65rem;
+      border-radius: 2px;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-switch {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .nav-switch:hover { color: var(--ink); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 var(--pad) 5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Stars */
+    .hero-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation-duration: var(--d, 3s);
+      animation-delay: var(--delay, 0s);
+      animation-iteration-count: infinite;
+      animation-timing-function: ease-in-out;
+    }
+
+    /* Slow gentle fade */
+    .star.blink-soft { animation-name: blink-soft; }
+    @keyframes blink-soft {
+      0%, 100% { opacity: var(--min-op, 0.15); transform: scale(1); }
+      50%       { opacity: var(--max-op, 0.7);  transform: scale(1.1); }
+    }
+
+    /* Sharp quick flash */
+    .star.blink-sharp { animation-name: blink-sharp; animation-timing-function: linear; }
+    @keyframes blink-sharp {
+      0%, 48%, 52%, 100% { opacity: var(--min-op, 0.1); }
+      50%                 { opacity: 1; }
+    }
+
+    /* Double pulse */
+    .star.blink-pulse { animation-name: blink-pulse; }
+    @keyframes blink-pulse {
+      0%, 100% { opacity: var(--min-op, 0.1);  transform: scale(1); }
+      20%      { opacity: var(--max-op, 0.9);  transform: scale(1.3); }
+      35%      { opacity: 0.15;                transform: scale(1); }
+      55%      { opacity: var(--max-op, 0.75); transform: scale(1.15); }
+      70%      { opacity: 0.1;                 transform: scale(1); }
+    }
+
+    /* Slow deep breathe */
+    .star.blink-breathe { animation-name: blink-breathe; }
+    @keyframes blink-breathe {
+      0%, 100% { opacity: var(--min-op, 0.05); transform: scale(0.8); }
+      40%, 60% { opacity: var(--max-op, 0.85); transform: scale(1.2); }
+    }
+
+    /* Glimmer — colour shift to gold */
+    .star.blink-glimmer { animation-name: blink-glimmer; }
+    @keyframes blink-glimmer {
+      0%, 100% { opacity: var(--min-op, 0.1);  background: #fff;     transform: scale(1); }
+      30%      { opacity: var(--max-op, 0.95); background: #ffd98a;  transform: scale(1.4); filter: blur(0.3px); }
+      60%      { opacity: 0.3;                 background: #fff;     transform: scale(1); }
+    }
+
+    /* Rapid micro-flicker */
+    .star.blink-flicker { animation-name: blink-flicker; animation-timing-function: steps(1); }
+    @keyframes blink-flicker {
+      0%   { opacity: 0.6; }
+      10%  { opacity: 0.1; }
+      20%  { opacity: 0.8; }
+      30%  { opacity: 0.2; }
+      40%  { opacity: 0.9; }
+      50%  { opacity: 0.1; }
+      60%  { opacity: 0.7; }
+      70%  { opacity: 0.3; }
+      80%  { opacity: 0.8; }
+      90%  { opacity: 0.1; }
+      100% { opacity: 0.6; }
+    }
+
+    /* Glow at bottom */
+    .hero-glow {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 50%;
+      background: radial-gradient(ellipse at bottom, rgba(155,110,255,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+    }
+
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .hero-label::before {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+    }
+
+    .hero-title {
+      font-size: clamp(4rem, 9vw, 8rem);
+      font-weight: 300;
+      font-style: italic;
+      line-height: 0.92;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: var(--violet);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: rgba(232,224,208,0.5);
+      line-height: 1.8;
+      max-width: 440px;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--violet);
+      text-decoration: none;
+      border: 1px solid rgba(155,110,255,0.3);
+      padding: 0.85rem 1.75rem;
+      transition: all 0.3s;
+      background: rgba(155,110,255,0.05);
+    }
+    .hero-cta:hover {
+      background: rgba(155,110,255,0.12);
+      border-color: rgba(155,110,255,0.6);
+    }
+
+    /* ── STORIES SECTION ── */
+    .stories-section {
+      padding: 5rem 0 6rem;
+    }
+
+    .section-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .stories-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .story-card {
+      background: var(--bg-2);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+    .story-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, transparent, var(--violet), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .story-card:hover { background: var(--bg-3); }
+    .story-card:hover::before { opacity: 1; }
+
+    .story-num {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-style: italic;
+      color: var(--line);
+      line-height: 1;
+    }
+
+    .story-tag {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(200,169,126,0.08);
+      padding: 0.18rem 0.55rem;
+      display: inline-block;
+      width: fit-content;
+    }
+
+    .story-title {
+      font-size: 1.4rem;
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.2;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .story-excerpt {
+      font-size: 0.9rem;
+      color: rgba(232,224,208,0.4);
+      line-height: 1.75;
+      font-style: normal;
+    }
+
+    .story-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--muted);
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .story-audio-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--violet);
+    }
+
+    /* ── FEATURED STORY ── */
+    .featured-story {
+      padding: 4rem 0 0;
+    }
+    .featured-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+    }
+    .featured-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+    .featured-art {
+      background: var(--bg-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-art-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(155,110,255,0.15) 0%, transparent 70%);
+    }
+    .featured-art-icon {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+    .featured-art-icon svg { opacity: 0.3; }
+    .featured-art-num {
+      font-family: var(--font-display);
+      font-size: 6rem;
+      font-style: italic;
+      color: var(--violet);
+      opacity: 0.15;
+      position: absolute;
+      bottom: 1rem;
+      right: 2rem;
+      line-height: 1;
+    }
+    .featured-body {
+      background: var(--bg-2);
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.25rem;
+    }
+    .featured-label {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .featured-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-style: italic;
+      font-weight: 300;
+      line-height: 1.15;
+      color: var(--ink);
+    }
+    .featured-desc {
+      font-size: 1rem;
+      color: rgba(232,224,208,0.5);
+      line-height: 1.8;
+    }
+    .featured-player {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 0.5rem;
+    }
+    .play-btn {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--violet);
+      border: none;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .play-btn:hover { background: #8555ee; transform: scale(1.05); }
+    .progress-track {
+      flex: 1;
+      height: 2px;
+      background: var(--line);
+      cursor: pointer;
+      position: relative;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--violet);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+    .duration {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .read-along-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(200,169,126,0.3);
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+    .read-along-btn:hover { border-color: var(--gold); }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      border-top: 1px solid var(--line);
+      padding: 2.5rem 0;
+      margin-top: 5rem;
+    }
+    .footer-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+    }
+    .footer-switcher {
+      display: flex;
+      align-items: center;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .sw-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 0.65rem 1.4rem;
+      transition: all 0.2s;
+    }
+    .sw-btn:hover, .sw-btn--active {
+      background: var(--violet);
+      color: #fff;
+    }
+    .sw-div {
+      width: 1px; height: 36px;
+      background: var(--line);
+    }
+    .footer-logo {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+    .footer-logo span { color: var(--violet); }
+    .footer-tagline {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--gold); }
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      color: var(--muted);
+      opacity: 0.4;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .stories-grid { grid-template-columns: repeat(2, 1fr); }
+      .featured-card { grid-template-columns: 1fr; }
+      .featured-art { min-height: 220px; }
+    }
+    @media (max-width: 640px) {
+      .stories-grid { grid-template-columns: 1fr; }
+      .nav-switch span { display: none; }
+      .featured-body { padding: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="../index.html" class="nav-logo">Echo<span>Point</span></a>
+    <span class="nav-side-tag">Stories</span>
+    <div class="nav-right">
+      <a href="../podcast/index.html" class="nav-switch">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13V8l6 4-6 4z"/></svg>
+        <span>Switch to Podcast</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-stars" id="heroStars"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <p class="hero-label">Fiction · Audio · Read-Along</p>
+      <h1 class="hero-title">
+        Where Words<br/>
+        <em>Come Alive</em>
+      </h1>
+      <p class="hero-sub">Original fictional stories — crafted to be heard and read at the same time. Press play, follow along.</p>
+      <a href="#stories" class="hero-cta">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Browse Stories
+      </a>
+    </div>
+  </section>
+
+  <!-- FEATURED STORY -->
+  <section class="featured-story">
+    <div class="featured-inner">
+      <div class="section-label" style="margin-bottom:1.5rem;">Featured Story</div>
+      <div class="featured-card">
+        <div class="featured-art">
+          <div class="featured-art-glow"></div>
+          <div class="featured-art-icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9b6eff" stroke-width="0.8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          </div>
+          <div class="featured-art-num">01</div>
+        </div>
+        <div class="featured-body">
+          <span class="featured-label">Story No. 001 · 28 min read · 28 min audio</span>
+          <h2 class="featured-title">The House at the End of the Unmade Road</h2>
+          <p class="featured-desc">A man returns to a house that shouldn't exist anymore. What he finds inside are rooms that remember things he never told anyone.</p>
+          <div class="featured-player">
+            <button class="play-btn" onclick="toggleFeaturedPlay(this)">
+              <svg class="i-play" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="i-pause" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <div class="progress-track">
+              <div class="progress-fill" id="featuredProgress"></div>
+            </div>
+            <span class="duration">00:00 / 28:00</span>
+          </div>
+          <a href="story.html" class="read-along-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            Open Read-Along
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ALL STORIES -->
+  <section class="stories-section" id="stories">
+    <div class="section-inner">
+      <div class="section-label">All Stories</div>
+      <div class="stories-grid">
+
+        <a href="story.html" class="story-card">
+          <div class="story-num">I</div>
+          <span class="story-tag">Mystery</span>
+          <h3 class="story-title">The House at the End of the Unmade Road</h3>
+          <p class="story-excerpt">A man returns to a house that shouldn't exist anymore.</p>
+          <div class="story-meta">
+            <span class="story-audio-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13V8l6 4.5-6 4.5z"/></svg>
+              Audio
+            </span>
+            <span>28 min</span>
+          </div>
+        </a>
+
+        <a href="story.html" class="story-card">
+          <div class="story-num">II</div>
+          <span class="story-tag">Drama</span>
+          <h3 class="story-title">Two Letters, Never Sent</h3>
+          <p class="story-excerpt">Letters written between a father and daughter who never found the right moment.</p>
+          <div class="story-meta">
+            <span class="story-audio-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13V8l6 4.5-6 4.5z"/></svg>
+              Audio
+            </span>
+            <span>19 min</span>
+          </div>
+        </a>
+
+        <a href="story.html" class="story-card">
+          <div class="story-num">III</div>
+          <span class="story-tag">Folklore</span>
+          <h3 class="story-title">The River That Remembered Names</h3>
+          <p class="story-excerpt">In the village they said the river could speak. No one listened until the names started disappearing.</p>
+          <div class="story-meta">
+            <span class="story-audio-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13V8l6 4.5-6 4.5z"/></svg>
+              Audio
+            </span>
+            <span>34 min</span>
+          </div>
+        </a>
+
+        <a href="story.html" class="story-card">
+          <div class="story-num">IV</div>
+          <span class="story-tag">Coming Soon</span>
+          <h3 class="story-title">More stories on the way…</h3>
+          <p class="story-excerpt">New fiction drops alongside new podcast episodes.</p>
+          <div class="story-meta">
+            <a href="../podcast/subscribe.html" style="color:var(--gold);text-decoration:none;font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;">Subscribe to be notified →</a>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-switcher">
+        <a href="index.html" class="sw-btn sw-btn--active">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          Stories
+        </a>
+        <div class="sw-div"></div>
+        <a href="../podcast/index.html" class="sw-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18A9 9 0 0 0 12 3zm-1 13V8l6 4-6 4z"/></svg>
+          Podcast
+        </a>
+      </div>
+      <div class="footer-logo">Echo<span>Point</span></div>
+      <p class="footer-tagline">Where words come alive</p>
+      <div class="footer-links">
+        <a href="index.html">Stories</a>
+        <a href="../podcast/index.html">Podcast</a>
+        <a href="../podcast/about.html">About</a>
+        <a href="../podcast/subscribe.html">Subscribe</a>
+      </div>
+      <p class="footer-copy">© 2025 EchoPoint. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Generate stars with varied blink types
+    const starsEl = document.getElementById('heroStars');
+    const blinkTypes = ['blink-soft','blink-sharp','blink-pulse','blink-breathe','blink-glimmer','blink-flicker'];
+    // Weight distribution — mostly soft/breathe, fewer sharp/flicker
+    const weighted = [
+      'blink-soft','blink-soft','blink-soft',
+      'blink-breathe','blink-breathe',
+      'blink-pulse','blink-pulse',
+      'blink-sharp',
+      'blink-glimmer',
+      'blink-flicker'
+    ];
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      const type = weighted[Math.floor(Math.random() * weighted.length)];
+      s.className = `star ${type}`;
+      const size = type === 'blink-glimmer'
+        ? Math.random() * 1.5 + 1.5      // glimmers are a bit bigger
+        : type === 'blink-flicker'
+        ? Math.random() * 1 + 0.5        // flickers are tiny
+        : Math.random() * 2 + 0.5;
+      const speed = type === 'blink-flicker'
+        ? (0.3 + Math.random() * 0.4)    // flicker = fast
+        : type === 'blink-sharp'
+        ? (1 + Math.random() * 2)
+        : (2.5 + Math.random() * 5);     // others = slow
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        --d:${speed}s;
+        --delay:${(Math.random()*8).toFixed(2)}s;
+        --min-op:${(0.05 + Math.random()*0.15).toFixed(2)};
+        --max-op:${(0.55 + Math.random()*0.45).toFixed(2)};
+      `;
+      starsEl.appendChild(s);
+    }
+
+    // Play toggle
+    let playing = false, prog = 0, iv;
+    function toggleFeaturedPlay(btn) {
+      playing = !playing;
+      btn.querySelector('.i-play').style.display = playing ? 'none' : 'block';
+      btn.querySelector('.i-pause').style.display = playing ? 'block' : 'none';
+      if (playing) {
+        iv = setInterval(() => {
+          prog += 0.06;
+          if (prog > 100) prog = 0;
+          document.getElementById('featuredProgress').style.width = prog + '%';
+        }, 100);
+      } else { clearInterval(iv); }
+    }
+
+    // Nav scroll
+    window.addEventListener('scroll', () => {
+      document.querySelector('nav').style.borderBottomColor =
+        window.scrollY > 40 ? 'rgba(255,255,255,0.07)' : 'transparent';
+    });
+  </script>
+</body>
+</html>
