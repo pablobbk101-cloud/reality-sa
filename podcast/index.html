@@ -452,30 +452,33 @@
       }
       .hero {
         min-height: auto;
-        padding: 7rem 1rem 3rem;
+        padding: 6rem 1rem 2.1rem;
       }
       .hero-title {
-        font-size: clamp(2.9rem, 16vw, 4.3rem);
+        font-size: clamp(2.45rem, 14vw, 3.5rem);
         max-width: none;
       }
       .hero-sub {
         max-width: none;
-        margin-bottom: 1.5rem;
-        line-height: 1.65;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+        font-size: 0.9rem;
       }
       .hero-actions {
         flex-direction: column;
         align-items: stretch;
-        gap: 0.9rem;
+        gap: 0.65rem;
       }
       .btn-primary,
       .btn-ghost {
         width: 100%;
         justify-content: center;
         text-align: center;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
       }
       .hero-eq {
-        height: 150px;
+        height: 110px;
         padding: 0 1rem;
       }
       .latest-section,
@@ -485,6 +488,11 @@
         padding-left: 1rem;
         padding-right: 1rem;
       }
+      .latest-section,
+      .episodes-section { padding-top: 2.1rem; padding-bottom: 2.1rem; }
+      .sub-strip { padding-top: 1.8rem; padding-bottom: 1.8rem; }
+      .section-label { margin-bottom: 0.85rem; }
+      .eps-header { margin-bottom: 1rem; }
       .latest-card,
       .ep-card,
       .sub-platforms,
@@ -492,6 +500,13 @@
       .footer-links {
         gap: 0.9rem;
       }
+      .latest-card { padding: 1.25rem; gap: 1.1rem; }
+      .ep-desc { margin-bottom: 1rem; line-height: 1.55; }
+      .ep-player { gap: 0.7rem; }
+      .ep-card { padding: 1.1rem; }
+      .ep-card-excerpt { font-size: 0.82rem; }
+      .sub-title { font-size: 1.6rem; }
+      .plat-btn { padding: 0.52rem 0.8rem; }
       .eps-grid { grid-template-columns: 1fr; }
       .sub-inner { flex-direction: column; align-items: flex-start; }
     }

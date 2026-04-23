@@ -153,7 +153,7 @@ nav {
   }
 
   .page-header {
-    padding: 2.35rem 1rem 2rem !important;
+    padding: 1.7rem 1rem 1.35rem !important;
   }
 
   .page-header p,
@@ -162,11 +162,11 @@ nav {
   }
 
   .filters-bar {
-    padding: 0.85rem 1rem !important;
+    padding: 0.65rem 1rem !important;
   }
 
   .filters-inner {
-    gap: 0.55rem !important;
+    gap: 0.4rem !important;
     align-items: stretch !important;
   }
 
@@ -186,22 +186,27 @@ nav {
   }
 
   .filter-btn {
-    min-height: 40px;
+    min-height: 36px;
+    padding: 0.32rem 0.68rem !important;
+    font-size: 0.75rem !important;
   }
 
   .results-info {
-    margin-top: 1rem !important;
+    margin-top: 0.65rem !important;
     align-items: flex-start !important;
+    font-size: 0.76rem !important;
   }
 
   .price-note {
     line-height: 1.5;
+    font-size: 0.7rem !important;
   }
 
   .phone-grid,
   .laptop-grid,
   .pc-grid {
     grid-template-columns: 1fr !important;
+    gap: 0.8rem !important;
   }
 
   .phone-card,
@@ -213,8 +218,8 @@ nav {
   .buy-section,
   .compare-cta,
   .comments-section {
-    padding: 1.2rem !important;
-    border-radius: 16px !important;
+    padding: 0.95rem !important;
+    border-radius: 14px !important;
   }
 
   .phone-card-footer,
@@ -225,6 +230,17 @@ nav {
     flex-wrap: wrap !important;
   }
 
+  .phone-card-top,
+  .laptop-card-top,
+  .pc-card-top,
+  .score-bars,
+  .buy-region,
+  .compare-cta,
+  .comment-form,
+  .comment-list {
+    margin-bottom: 0.85rem !important;
+  }
+
   .compare-cta-btn,
   .comment-submit {
     width: 100%;
@@ -233,18 +249,21 @@ nav {
 
   .buy-store-grid {
     display: grid !important;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.45rem !important;
   }
 
   .buy-store-btn {
     width: 100%;
     justify-content: center;
+    padding: 0.48rem 0.7rem !important;
+    font-size: 0.74rem !important;
   }
 
   .review-header {
     grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-    padding: 1.35rem !important;
+    gap: 0.8rem !important;
+    padding: 1rem !important;
   }
 
   .big-score-block {
@@ -252,86 +271,141 @@ nav {
   }
 
   .big-score-num {
-    font-size: 3.7rem !important;
+    font-size: 3rem !important;
   }
 
   .pros-cons {
     grid-template-columns: 1fr !important;
+    gap: 0.7rem !important;
+    margin-bottom: 1rem !important;
   }
 
   .score-cat {
-    gap: 0.75rem !important;
+    gap: 0.55rem !important;
     align-items: center !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .score-cat-label {
-    width: 78px !important;
-    font-size: 0.8rem !important;
+    width: 70px !important;
+    font-size: 0.76rem !important;
+  }
+
+  .score-cat-icon {
+    width: 22px !important;
+    font-size: 1rem !important;
+  }
+
+  .score-cat-num {
+    width: 22px !important;
+    font-size: 0.95rem !important;
   }
 
   .specs-table {
     overflow: hidden;
+    margin-bottom: 1rem !important;
   }
 
   .specs-table-header {
-    padding: 0.9rem 1rem !important;
+    padding: 0.7rem 0.85rem !important;
+    font-size: 0.92rem !important;
   }
 
   .spec-row {
     flex-direction: column;
-    gap: 0.35rem !important;
-    padding: 0.8rem 1rem !important;
+    gap: 0.22rem !important;
+    padding: 0.58rem 0.85rem !important;
   }
 
   .spec-key {
     width: auto !important;
+    font-size: 0.72rem !important;
+  }
+
+  .spec-val {
+    font-size: 0.79rem !important;
   }
 
   .comment-form-row {
     flex-direction: column;
+    gap: 0.55rem !important;
+    margin-bottom: 0.55rem !important;
   }
 
   .selectors {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-    margin-top: 1.25rem !important;
+    grid-template-columns: 1fr auto 1fr !important;
+    gap: 0.5rem !important;
+    margin-top: 0.8rem !important;
+    align-items: stretch !important;
   }
 
   .vs-circle {
     margin: 0 auto;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 0.72rem !important;
+    align-self: center;
   }
 
   .compare-btn-main {
     width: 100%;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+    padding: 0.78rem 1rem !important;
+    font-size: 0.92rem !important;
   }
 
   .overview-row {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) 44px minmax(0, 1fr) !important;
+    margin-bottom: 0.9rem !important;
   }
 
   .overview-side {
-    padding: 1.35rem !important;
+    padding: 0.8rem !important;
   }
 
   .overview-mid {
-    min-height: 52px;
-    border-left: none !important;
-    border-right: none !important;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    min-height: auto;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: 1px solid var(--border) !important;
+    border-right: 1px solid var(--border) !important;
+    font-size: 0.78rem !important;
   }
 
   .cat-row {
-    grid-template-columns: 1fr !important;
-    text-align: left !important;
-    padding: 1rem !important;
+    grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr) !important;
+    text-align: center !important;
+    padding: 0.8rem !important;
+    gap: 0.45rem !important;
   }
 
   .cat-left,
   .cat-right {
-    text-align: left !important;
+    text-align: center !important;
+  }
+
+  .cat-grid {
+    gap: 0.55rem !important;
+    margin-bottom: 0.9rem !important;
+  }
+
+  .cat-score-a,
+  .cat-score-b {
+    font-size: 1.2rem !important;
+  }
+
+  .cat-name {
+    font-size: 0.62rem !important;
+    line-height: 1.2;
+  }
+
+  .cat-icon {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.18rem !important;
+  }
+
+  .cat-win-badge {
+    font-size: 0.52rem !important;
+    margin-top: 0.22rem !important;
   }
 
   .specs-table {
@@ -340,10 +414,46 @@ nav {
 
   .specs-header,
   .spec-row {
-    min-width: 560px;
+    min-width: 480px;
   }
 
   footer {
-    padding: 2rem 1rem !important;
+    padding: 1.35rem 1rem !important;
+  }
+
+  .page {
+    padding-top: 1.35rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .grid-wrap {
+    margin-top: 0.8rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .section-heading,
+  .overview-name,
+  .selected-name {
+    margin-bottom: 0.7rem !important;
+  }
+
+  .comments-section textarea {
+    min-height: 72px !important;
+  }
+
+  .comment-item {
+    padding: 0.8rem !important;
+  }
+
+  .comment-body {
+    font-size: 0.82rem !important;
+  }
+
+  .selector-label,
+  .review-tag,
+  .buy-region-label,
+  .big-score-label,
+  .big-score-verdict {
+    font-size: 0.64rem !important;
   }
 }
