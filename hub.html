@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Samsung A Series Hub — Mr Point</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9fafb;
+      --bg-card: #ffffff;
+      --ink: #0f0f0f;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --blue: #2563eb;
+      --blue-dark: #1d4ed8;
+      --blue-light: #eff6ff;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-hover: 0 4px 12px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); padding: 0.5rem 0.85rem; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+    .nav-links a:hover { background: var(--bg); color: var(--ink); }
+    .nav-links a.active { color: var(--blue); background: var(--blue-light); }
+    .nav-cta { background: var(--blue); color: #fff !important; padding: 0.5rem 1rem !important; border-radius: 8px !important; font-weight: 600 !important; }
+    .nav-cta:hover { background: var(--blue-dark) !important; color: #fff !important; }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #fff;
+      padding: 3rem 1.5rem 2.5rem;
+    }
+    .page-header-inner { max-width: 1200px; margin: 0 auto; }
+    .breadcrumb { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 0.75rem; }
+    .breadcrumb a { color: rgba(255,255,255,0.45); }
+    .breadcrumb a:hover { color: rgba(255,255,255,0.8); }
+    .page-header h1 { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .page-header p { color: rgba(255,255,255,0.6); font-size: 0.95rem; }
+
+    /* FILTERS */
+    .filters-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+    .filters-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 0.25rem; }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .filter-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .filter-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+    .search-wrap { margin-left: auto; position: relative; }
+    .search-input {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem 0.4rem 2.25rem;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      width: 200px;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--blue); }
+    .search-icon { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--muted); }
+
+    /* RESULTS INFO */
+    .results-info {
+      max-width: 1200px;
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .price-note {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* GRID */
+    .grid-wrap { max-width: 1200px; margin: 1.25rem auto 4rem; padding: 0 1.5rem; }
+    .phone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.25rem; }
+
+    /* PHONE CARD */
+    .phone-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; display: flex; flex-direction: column; }
+    .phone-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .phone-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+    .phone-card-name { font-weight: 700; font-size: 1rem; line-height: 1.3; }
+    .phone-card-year { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+    .score-badge { text-align: center; min-width: 52px; }
+    .score-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.75rem; line-height: 1; }
+    .score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+    .score-bars { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.25rem; }
+    .score-bar-row { display: flex; align-items: center; gap: 0.6rem; }
+    .score-bar-label { font-size: 0.7rem; color: var(--muted); width: 68px; flex-shrink: 0; }
+    .score-bar-track { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 999px; }
+    .score-bar-val { font-size: 0.7rem; font-weight: 600; color: var(--ink); width: 16px; text-align: right; flex-shrink: 0; }
+    .phone-card-footer { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+    .phone-price { font-weight: 700; font-size: 0.95rem; }
+    .phone-5g { font-size: 0.65rem; font-weight: 700; background: #dbeafe; color: var(--blue); padding: 0.2rem 0.5rem; border-radius: 4px; }
+    .phone-4g { font-size: 0.65rem; font-weight: 700; background: #f3f4f6; color: var(--muted); padding: 0.2rem 0.5rem; border-radius: 4px; }
+    .compare-btn {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--blue);
+      background: var(--blue-light);
+      border: none;
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.15s;
+    }
+    .compare-btn:hover { background: #dbeafe; }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+    .empty-state h3 { font-size: 1.1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+
+    /* SORT */
+    .sort-wrap { display: flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem; }
+    .sort-select {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 0.8rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+
+    footer { background: #0f172a; color: rgba(255,255,255,0.5); text-align: center; padding: 2rem 1.5rem; font-size: 0.8rem; }
+    footer strong { color: #fff; font-family: 'Outfit', sans-serif; }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .search-wrap { margin-left: 0; width: 100%; }
+      .search-input { width: 100%; }
+      .filters-inner { gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Mr<span>Point</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="hub.html" class="active">📱 Phones</a>
+      <a href="laptops.html">💻 Laptops</a>
+      <a href="pcs.html">🖥️ PCs</a>
+      <a href="compare.html">Compare</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Samsung A Series Hub</div>
+    <h1>Samsung A Series — Every Phone Reviewed</h1>
+    <p>Straight scores. No filler. Find the right phone for your budget.</p>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-bar">
+  <div class="filters-inner">
+    <span class="filter-label">Year</span>
+    <button class="filter-btn active" data-year="all">All</button>
+    <button class="filter-btn" data-year="2024">2024</button>
+    <button class="filter-btn" data-year="2023">2023</button>
+    <button class="filter-btn" data-year="2022">2022</button>
+    <button class="filter-btn" data-year="2021">2021</button>
+    <button class="filter-btn" data-year="2020">2020</button>
+
+    <div class="filter-sep"></div>
+    <span class="filter-label">Price</span>
+    <button class="filter-btn active" data-price="all">All</button>
+    <button class="filter-btn" data-price="0-3500">Under R3,500</button>
+    <button class="filter-btn" data-price="3500-7000">R3,500–R7,000</button>
+    <button class="filter-btn" data-price="7000-99999">R7,000+</button>
+
+    <div class="filter-sep"></div>
+    <div class="sort-wrap">
+      <span class="filter-label">Sort</span>
+      <select class="sort-select" id="sort-select">
+        <option value="score">Best Score</option>
+        <option value="year">Newest First</option>
+        <option value="price-asc">Price: Low–High</option>
+        <option value="price-desc">Price: High–Low</option>
+      </select>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="Search phones…"/>
+    </div>
+  </div>
+</div>
+
+<div class="results-info">
+  <span id="results-info"></span>
+  <span class="price-note">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    All prices are rough estimates — check retailer for exact price
+  </span>
+</div>
+
+<!-- PHONE GRID -->
+<div class="grid-wrap">
+  <div class="phone-grid" id="phone-grid"></div>
+  <div class="empty-state" id="empty-state" style="display:none;">
+    <h3>No phones match your filters</h3>
+    <p>Try adjusting the year or price range.</p>
+  </div>
+</div>
+
+<footer>
+  <strong>MrPoint</strong> — Straight tech. No fluff.<br>
+  <span style="margin-top:0.5rem;display:block;">Prices are approximate and may vary by region.</span>
+</footer>
+
+<script src="data.js"></script>
+<script src="currency.js"></script>
+<script>
+  injectCurrencyPicker('.nav-inner');
+  let activeYear = 'all';
+  let activePrice = 'all';
+  let searchQuery = '';
+  let sortOrder = 'score';
+
+  function barColor(score) {
+    if (score >= 8) return '#22c55e';
+    if (score >= 6) return '#eab308';
+    return '#ef4444';
+  }
+
+  function phoneCard(phone) {
+    const cats = [
+      { key: 'camera', label: 'Camera' },
+      { key: 'performance', label: 'Perf.' },
+      { key: 'battery', label: 'Battery' },
+      { key: 'display', label: 'Display' },
+      { key: 'value', label: 'Value' },
+    ];
+    const bars = cats.map(c => `
+      <div class="score-bar-row">
+        <span class="score-bar-label">${c.label}</span>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" style="width:${phone.scores[c.key]*10}%; background:${barColor(phone.scores[c.key])};"></div>
+        </div>
+        <span class="score-bar-val">${phone.scores[c.key]}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="phone-card" onclick="window.location='phone.html?id=${phone.id}'">
+        <div class="phone-card-top">
+          <div>
+            <div class="phone-card-name">${phone.name}</div>
+            <div class="phone-card-year">${phone.year} · ${formatPrice(phone.price)}</div>
+          </div>
+          <div class="score-badge">
+            <div class="score-num" style="color:${phone.scoreInfo.color}">${phone.overall}</div>
+            <div class="score-label" style="color:${phone.scoreInfo.color}">${phone.scoreInfo.label}</div>
+          </div>
+        </div>
+        <div class="score-bars">${bars}</div>
+        <div class="phone-card-footer">
+          <span class="phone-price">${formatPrice(phone.price)}</span>
+          ${phone.fiveG ? '<span class="phone-5g">5G</span>' : '<span class="phone-4g">4G</span>'}
+          <button class="compare-btn" onclick="event.stopPropagation(); goCompare('${phone.id}')">+ Compare</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function goCompare(id) {
+    window.location = `compare.html?a=${id}`;
+  }
+
+  function applyFilters() {
+    let filtered = [...phones];
+
+    if (activeYear !== 'all') filtered = filtered.filter(p => p.year === parseInt(activeYear));
+    if (activePrice !== 'all') {
+      const [min, max] = activePrice.split('-').map(Number);
+      filtered = filtered.filter(p => p.price >= min && p.price <= max);
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(p => p.name.toLowerCase().includes(q) || p.chipset.toLowerCase().includes(q));
+    }
+
+    if (sortOrder === 'score') filtered.sort((a, b) => b.overall - a.overall);
+    else if (sortOrder === 'year') filtered.sort((a, b) => b.year - a.year || b.overall - a.overall);
+    else if (sortOrder === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+    else if (sortOrder === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+
+    const grid = document.getElementById('phone-grid');
+    const empty = document.getElementById('empty-state');
+    const info = document.getElementById('results-info');
+
+    info.textContent = `Showing ${filtered.length} of ${phones.length} phones`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      grid.innerHTML = filtered.map(phoneCard).join('');
+      empty.style.display = 'none';
+    }
+  }
+
+  // Year filter buttons
+  document.querySelectorAll('[data-year]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-year]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeYear = btn.dataset.year;
+      applyFilters();
+    });
+  });
+
+  // Price filter buttons
+  document.querySelectorAll('[data-price]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-price]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activePrice = btn.dataset.price;
+      applyFilters();
+    });
+  });
+
+  // Sort
+  document.getElementById('sort-select').addEventListener('change', e => {
+    sortOrder = e.target.value;
+    applyFilters();
+  });
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchQuery = e.target.value.trim();
+    applyFilters();
+  });
+
+  applyFilters();
+</script>
+</body>
+</html>

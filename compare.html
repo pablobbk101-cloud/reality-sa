@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Compare Phones — Mr Point</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f9fafb; --bg-card: #fff; --ink: #0f0f0f; --muted: #6b7280;
+      --border: #e5e7eb; --blue: #2563eb; --blue-dark: #1d4ed8; --blue-light: #eff6ff;
+      --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    nav { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); padding: 0.5rem 0.85rem; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+    .nav-links a:hover { background: var(--bg); color: var(--ink); }
+    .nav-links a.active { color: var(--blue); background: var(--blue-light); }
+
+    .page-header { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #fff; padding: 3rem 1.5rem 2.5rem; }
+    .page-header-inner { max-width: 1200px; margin: 0 auto; }
+    .breadcrumb { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 0.75rem; }
+    .breadcrumb a { color: rgba(255,255,255,0.45); }
+    .page-header h1 { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .page-header p { color: rgba(255,255,255,0.6); font-size: 0.95rem; }
+
+    /* SELECTORS */
+    .selectors {
+      max-width: 1200px;
+      margin: 2.5rem auto 0;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .selector-card {
+      background: var(--bg-card);
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .selector-card.filled { border-style: solid; border-color: var(--border); }
+    .selector-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+    .phone-select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 0.9rem;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      cursor: pointer;
+    }
+    .phone-select:focus { border-color: var(--blue); }
+    .selected-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.3rem;
+      letter-spacing: -0.02em;
+      margin-top: 0.75rem;
+      color: var(--ink);
+    }
+    .selected-sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    .vs-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2.5rem;
+      flex-shrink: 0;
+    }
+
+    .compare-btn-wrap { text-align: center; margin: 1.5rem auto; max-width: 1200px; padding: 0 1.5rem; }
+    .compare-btn-main {
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      border: none;
+      padding: 0.9rem 2.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .compare-btn-main:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .compare-btn-main:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+
+    /* RESULTS */
+    .results { max-width: 1200px; margin: 0 auto 4rem; padding: 0 1.5rem; }
+
+    /* SCORE OVERVIEW */
+    .overview-row {
+      display: grid;
+      grid-template-columns: 1fr 80px 1fr;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .overview-side {
+      padding: 2rem;
+      text-align: center;
+    }
+    .overview-side.winner { background: #f0fdf4; }
+    .overview-name {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .overview-big-score {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 4rem;
+      line-height: 1;
+    }
+    .overview-verdict {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.3rem;
+    }
+    .overview-mid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border-left: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+
+    /* CATEGORY COMPARISON */
+    .cat-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.5rem; }
+    .cat-row {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr 120px 1fr;
+      gap: 1rem;
+      align-items: center;
+      box-shadow: var(--shadow);
+    }
+    .cat-left { text-align: right; }
+    .cat-right { text-align: left; }
+    .cat-score-a, .cat-score-b {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+    .cat-bar-wrap { position: relative; height: 8px; background: var(--border); border-radius: 999px; margin-top: 0.4rem; }
+    .cat-bar-a { position: absolute; right: 50%; top: 0; bottom: 0; border-radius: 999px 0 0 999px; }
+    .cat-bar-b { position: absolute; left: 50%; top: 0; bottom: 0; border-radius: 0 999px 999px 0; }
+    .cat-center { text-align: center; }
+    .cat-name { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+    .cat-icon { font-size: 1.5rem; display: block; margin-bottom: 0.3rem; }
+    .cat-win-badge { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.15rem 0.4rem; border-radius: 4px; display: inline-block; margin-top: 0.3rem; }
+    .win { background: #dcfce7; color: #16a34a; }
+    .lose { background: #f3f4f6; color: var(--muted); }
+
+    /* SPECS TABLE */
+    .specs-table {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .specs-header {
+      display: grid;
+      grid-template-columns: 140px 1fr 1fr;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 0.85rem 1.25rem;
+    }
+    .specs-header div { font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+    .spec-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 1fr;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-row:nth-child(odd) { background: #fafafa; }
+    .spec-key { font-size: 0.78rem; font-weight: 600; color: var(--muted); }
+    .spec-val { font-size: 0.82rem; font-weight: 500; }
+
+    /* VERDICT BOX */
+    .verdict-box {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow);
+    }
+    .verdict-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #93c5fd;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .verdict-box h3 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: 1.4rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .verdict-box h3 em { font-style: normal; color: #60a5fa; }
+    .verdict-text { color: rgba(255,255,255,0.75); line-height: 1.7; font-size: 0.95rem; }
+
+    /* HIDDEN */
+    #results-section { display: none; }
+
+    footer { background: #0f172a; color: rgba(255,255,255,0.5); text-align: center; padding: 2rem 1.5rem; font-size: 0.8rem; }
+    footer strong { color: #fff; font-family: 'Outfit', sans-serif; }
+
+    @media (max-width: 768px) {
+      .selectors { grid-template-columns: 1fr; }
+      .vs-circle { margin: 0 auto; }
+      .overview-row { grid-template-columns: 1fr; }
+      .overview-mid { border: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 1rem; }
+      .cat-row { grid-template-columns: 1fr; text-align: center; }
+      .cat-left, .cat-right { text-align: center; }
+      .specs-header, .spec-row { grid-template-columns: 120px 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Mr<span>Point</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="hub.html">A Series Hub</a>
+      <a href="compare.html" class="active">Compare</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Compare Phones</div>
+    <h1>Compare Any Two A Series Phones</h1>
+    <p>Side-by-side scores, specs, and a straight verdict on which one to get.</p>
+  </div>
+</div>
+
+<!-- SELECTORS -->
+<div class="selectors">
+  <div class="selector-card" id="card-a">
+    <div class="selector-label">Phone A</div>
+    <select class="phone-select" id="select-a">
+      <option value="">— Choose a phone —</option>
+    </select>
+    <div id="info-a" style="display:none;">
+      <div class="selected-name" id="name-a"></div>
+      <div class="selected-sub" id="sub-a"></div>
+    </div>
+  </div>
+
+  <div class="vs-circle">VS</div>
+
+  <div class="selector-card" id="card-b">
+    <div class="selector-label">Phone B</div>
+    <select class="phone-select" id="select-b">
+      <option value="">— Choose a phone —</option>
+    </select>
+    <div id="info-b" style="display:none;">
+      <div class="selected-name" id="name-b"></div>
+      <div class="selected-sub" id="sub-b"></div>
+    </div>
+  </div>
+</div>
+
+<div class="compare-btn-wrap">
+  <button class="compare-btn-main" id="compare-btn" disabled onclick="runCompare()">Compare Now →</button>
+</div>
+
+<!-- RESULTS -->
+<div class="results" id="results-section">
+
+  <!-- SCORE OVERVIEW -->
+  <div class="overview-row" id="overview-row">
+    <div class="overview-side" id="side-a">
+      <div class="overview-name" id="ov-name-a"></div>
+      <div class="overview-big-score" id="ov-score-a"></div>
+      <div class="overview-verdict" id="ov-verdict-a"></div>
+      <div style="font-size:0.8rem; color:var(--muted); margin-top:0.5rem;" id="ov-win-a"></div>
+    </div>
+    <div class="overview-mid">VS</div>
+    <div class="overview-side" id="side-b">
+      <div class="overview-name" id="ov-name-b"></div>
+      <div class="overview-big-score" id="ov-score-b"></div>
+      <div class="overview-verdict" id="ov-verdict-b"></div>
+      <div style="font-size:0.8rem; color:var(--muted); margin-top:0.5rem;" id="ov-win-b"></div>
+    </div>
+  </div>
+
+  <!-- CATEGORY BREAKDOWN -->
+  <div class="cat-grid" id="cat-grid"></div>
+
+  <!-- SPECS TABLE -->
+  <div class="specs-table">
+    <div class="specs-header">
+      <div>Spec</div>
+      <div id="spec-head-a"></div>
+      <div id="spec-head-b"></div>
+    </div>
+    <div id="specs-body"></div>
+  </div>
+
+  <!-- VERDICT -->
+  <div class="verdict-box" id="verdict-box">
+    <div class="verdict-tag">Mr Point Says</div>
+    <h3 id="verdict-title"></h3>
+    <p class="verdict-text" id="verdict-text"></p>
+  </div>
+
+</div>
+
+<footer>
+  <strong>MrPoint</strong> — Straight tech. No fluff.
+</footer>
+
+<script src="data.js"></script>
+<script src="currency.js"></script>
+<script>
+  injectCurrencyPicker('.nav-inner');
+
+  const cats = [
+    { key: 'camera', label: 'Camera', icon: '📸' },
+    { key: 'performance', label: 'Performance', icon: '⚡' },
+    { key: 'battery', label: 'Battery', icon: '🔋' },
+    { key: 'display', label: 'Display', icon: '🖥️' },
+    { key: 'value', label: 'Value for Money', icon: '💰' },
+  ];
+
+  function barColor(s) {
+    if (s >= 8) return '#22c55e';
+    if (s >= 6) return '#eab308';
+    return '#ef4444';
+  }
+
+  // Populate selects
+  const sortedPhones = [...phones].sort((a, b) => b.year - a.year || a.name.localeCompare(b.name));
+  ['select-a', 'select-b'].forEach(id => {
+    const sel = document.getElementById(id);
+    sortedPhones.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = `${p.name} (${p.year})`;
+      sel.appendChild(opt);
+    });
+  });
+
+  function onSelect(side) {
+    const id = document.getElementById(`select-${side}`).value;
+    const phone = phones.find(p => p.id === id);
+    const infoEl = document.getElementById(`info-${side}`);
+    const cardEl = document.getElementById(`card-${side}`);
+    if (phone) {
+      document.getElementById(`name-${side}`).textContent = phone.name;
+      document.getElementById(`sub-${side}`).textContent = `${phone.year} · ${formatPrice(phone.price)} · Overall: ${phone.overall}/10`;
+      infoEl.style.display = 'block';
+      cardEl.classList.add('filled');
+    } else {
+      infoEl.style.display = 'none';
+      cardEl.classList.remove('filled');
+    }
+    const a = document.getElementById('select-a').value;
+    const b = document.getElementById('select-b').value;
+    document.getElementById('compare-btn').disabled = !(a && b && a !== b);
+  }
+
+  document.getElementById('select-a').addEventListener('change', () => onSelect('a'));
+  document.getElementById('select-b').addEventListener('change', () => onSelect('b'));
+
+  // Pre-select from URL param
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('a')) {
+    document.getElementById('select-a').value = params.get('a');
+    onSelect('a');
+  }
+
+  function runCompare() {
+    const pA = phones.find(p => p.id === document.getElementById('select-a').value);
+    const pB = phones.find(p => p.id === document.getElementById('select-b').value);
+    if (!pA || !pB) return;
+
+    const winner = pA.overall >= pB.overall ? pA : pB;
+    const loser = winner === pA ? pB : pA;
+
+    // Overview
+    document.getElementById('ov-name-a').textContent = pA.name;
+    document.getElementById('ov-score-a').textContent = pA.overall;
+    document.getElementById('ov-score-a').style.color = pA.scoreInfo.color;
+    document.getElementById('ov-verdict-a').textContent = pA.scoreInfo.label;
+    document.getElementById('ov-verdict-a').style.color = pA.scoreInfo.color;
+
+    document.getElementById('ov-name-b').textContent = pB.name;
+    document.getElementById('ov-score-b').textContent = pB.overall;
+    document.getElementById('ov-score-b').style.color = pB.scoreInfo.color;
+    document.getElementById('ov-verdict-b').textContent = pB.scoreInfo.label;
+    document.getElementById('ov-verdict-b').style.color = pB.scoreInfo.color;
+
+    if (pA.overall > pB.overall) {
+      document.getElementById('side-a').classList.add('winner');
+      document.getElementById('side-b').classList.remove('winner');
+      document.getElementById('ov-win-a').textContent = '🏆 Winner';
+      document.getElementById('ov-win-b').textContent = '';
+    } else if (pB.overall > pA.overall) {
+      document.getElementById('side-b').classList.add('winner');
+      document.getElementById('side-a').classList.remove('winner');
+      document.getElementById('ov-win-b').textContent = '🏆 Winner';
+      document.getElementById('ov-win-a').textContent = '';
+    } else {
+      document.getElementById('side-a').classList.remove('winner');
+      document.getElementById('side-b').classList.remove('winner');
+      document.getElementById('ov-win-a').textContent = '🤝 Tie';
+      document.getElementById('ov-win-b').textContent = '🤝 Tie';
+    }
+
+    // Category breakdown
+    const catGrid = document.getElementById('cat-grid');
+    catGrid.innerHTML = cats.map(cat => {
+      const sA = pA.scores[cat.key];
+      const sB = pB.scores[cat.key];
+      const aWins = sA > sB;
+      const bWins = sB > sA;
+      const halfA = (sA / 10) * 50;
+      const halfB = (sB / 10) * 50;
+      return `
+        <div class="cat-row">
+          <div class="cat-left">
+            <div class="cat-score-a" style="color:${barColor(sA)}">${sA}</div>
+            <div class="cat-bar-wrap">
+              <div class="cat-bar-a" style="width:${halfA}%; background:${barColor(sA)};"></div>
+            </div>
+            <div><span class="cat-win-badge ${aWins ? 'win' : bWins ? 'lose' : 'win'}">${aWins ? '✓ Wins' : bWins ? 'Loses' : 'Tie'}</span></div>
+          </div>
+          <div class="cat-center">
+            <span class="cat-icon">${cat.icon}</span>
+            <div class="cat-name">${cat.label}</div>
+          </div>
+          <div class="cat-right">
+            <div class="cat-score-a" style="color:${barColor(sB)}">${sB}</div>
+            <div class="cat-bar-wrap">
+              <div class="cat-bar-b" style="width:${halfB}%; background:${barColor(sB)};"></div>
+            </div>
+            <div><span class="cat-win-badge ${bWins ? 'win' : aWins ? 'lose' : 'win'}">${bWins ? '✓ Wins' : aWins ? 'Loses' : 'Tie'}</span></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Specs table
+    document.getElementById('spec-head-a').textContent = pA.name;
+    document.getElementById('spec-head-b').textContent = pB.name;
+
+    const specRows = [
+      { label: 'Year', a: pA.year, b: pB.year },
+      { label: 'Price', a: formatPrice(pA.price), b: formatPrice(pB.price) },
+      { label: 'Chipset', a: pA.chipset, b: pB.chipset },
+      { label: 'Display', a: pA.display, b: pB.display },
+      { label: 'RAM', a: pA.ram, b: pB.ram },
+      { label: 'Storage', a: pA.storage, b: pB.storage },
+      { label: 'Battery', a: pA.battery, b: pB.battery },
+      { label: 'Camera', a: pA.camera, b: pB.camera },
+      { label: 'Selfie', a: pA.selfie, b: pB.selfie },
+      { label: '5G', a: pA.fiveG ? '✓ Yes' : '✗ No', b: pB.fiveG ? '✓ Yes' : '✗ No' },
+    ];
+
+    document.getElementById('specs-body').innerHTML = specRows.map(r => `
+      <div class="spec-row">
+        <div class="spec-key">${r.label}</div>
+        <div class="spec-val">${r.a}</div>
+        <div class="spec-val">${r.b}</div>
+      </div>
+    `).join('');
+
+    // Mr Point verdict
+    const diff = Math.abs(pA.overall - pB.overall);
+    let title, text;
+
+    if (diff < 0.5) {
+      title = `${pA.name} and ${pB.name} are very close — here's how to decide.`;
+      const aAdvantages = cats.filter(c => pA.scores[c.key] > pB.scores[c.key]).map(c => c.label);
+      const bAdvantages = cats.filter(c => pB.scores[c.key] > pA.scores[c.key]).map(c => c.label);
+      text = `These two are almost identical in overall score, so it comes down to priorities. The ${pA.name} wins on ${aAdvantages.length > 0 ? aAdvantages.join(', ') : 'nothing specifically'}, while the ${pB.name} edges it on ${bAdvantages.length > 0 ? bAdvantages.join(', ') : 'nothing specifically'}. If price is the same, go with the ${winner.name} — it has the slight edge. If one is significantly cheaper, that one's the better deal.`;
+    } else {
+      const aAdvantages = cats.filter(c => winner.scores[c.key] > loser.scores[c.key]).map(c => c.label);
+      title = `Get the ${winner.name}. Here's why.`;
+      text = `The ${winner.name} wins this comparison with a ${winner.overall}/10 vs the ${loser.name}'s ${loser.overall}/10. The gap is clearest in ${aAdvantages.length > 0 ? aAdvantages.join(', ') : 'the overall experience'}. ${winner.mrPointSays} The ${loser.name} isn't bad — but if these are your two options, the ${winner.name} is the smarter pick.`;
+    }
+
+    document.getElementById('verdict-title').innerHTML = title.replace(winner.name, `<em>${winner.name}</em>`);
+    document.getElementById('verdict-text').textContent = text;
+
+    document.getElementById('results-section').style.display = 'block';
+    document.getElementById('results-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phone Review — Mr Point</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f9fafb; --bg-card: #fff; --ink: #0f0f0f; --muted: #6b7280;
+      --border: #e5e7eb; --blue: #2563eb; --blue-dark: #1d4ed8; --blue-light: #eff6ff;
+      --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    nav { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); padding: 0.5rem 0.85rem; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+    .nav-links a:hover { background: var(--bg); color: var(--ink); }
+
+    /* PAGE CONTENT */
+    .page { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    /* BREADCRUMB */
+    .breadcrumb { font-size: 0.78rem; color: var(--muted); margin-bottom: 1.75rem; display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+    .breadcrumb a { color: var(--muted); transition: color 0.15s; }
+    .breadcrumb a:hover { color: var(--blue); }
+    .breadcrumb-sep { color: var(--border); }
+
+    /* REVIEW HEADER */
+    .review-header {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: start;
+    }
+    .review-tag { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--blue); background: var(--blue-light); display: inline-block; padding: 0.3rem 0.7rem; border-radius: 6px; margin-bottom: 0.75rem; }
+    .review-title { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .review-sub { font-size: 0.875rem; color: var(--muted); display: flex; gap: 1rem; flex-wrap: wrap; }
+    .review-sub span { display: flex; align-items: center; gap: 0.3rem; }
+
+    /* BIG SCORE */
+    .big-score-block { text-align: center; }
+    .big-score-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 5rem; line-height: 1; }
+    .big-score-denom { font-size: 1.5rem; color: var(--muted); font-weight: 400; }
+    .big-score-verdict { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.4rem; }
+    .big-score-label { font-size: 0.7rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* SCORE BREAKDOWN */
+    .score-breakdown {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .section-heading { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: -0.01em; margin-bottom: 1.25rem; }
+    .score-cat { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .score-cat:last-child { margin-bottom: 0; }
+    .score-cat-icon { font-size: 1.25rem; flex-shrink: 0; width: 28px; text-align: center; }
+    .score-cat-label { font-size: 0.875rem; font-weight: 600; width: 110px; flex-shrink: 0; }
+    .score-cat-track { flex: 1; height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .score-cat-fill { height: 100%; border-radius: 999px; transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+    .score-cat-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.1rem; width: 28px; text-align: right; flex-shrink: 0; }
+
+    /* VERDICT */
+    .verdict-box {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .verdict-tag-inner { display: inline-block; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #93c5fd; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 999px; margin-bottom: 0.75rem; }
+    .verdict-text { color: rgba(255,255,255,0.8); line-height: 1.75; font-size: 0.95rem; }
+
+    /* PROS/CONS */
+    .pros-cons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .pros-card, .cons-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .pros-card { border-top: 3px solid #22c55e; }
+    .cons-card { border-top: 3px solid #ef4444; }
+    .pc-heading { font-weight: 700; font-size: 0.85rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+    .pc-item { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.5; }
+    .pc-item:last-child { margin-bottom: 0; }
+    .pc-dot { flex-shrink: 0; margin-top: 0.35rem; width: 5px; height: 5px; border-radius: 50%; }
+    .pros-card .pc-dot { background: #22c55e; }
+    .cons-card .pc-dot { background: #ef4444; }
+
+    /* SPECS TABLE */
+    .specs-table {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .specs-table-header { background: var(--bg); padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .spec-row { display: flex; align-items: flex-start; padding: 0.7rem 1.25rem; border-bottom: 1px solid var(--border); gap: 1rem; }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-row:nth-child(even) { background: #fafafa; }
+    .spec-key { font-size: 0.78rem; font-weight: 600; color: var(--muted); width: 120px; flex-shrink: 0; padding-top: 0.05rem; }
+    .spec-val { font-size: 0.85rem; }
+
+    /* WHERE TO BUY */
+    .buy-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+    .buy-region {
+      margin-bottom: 1.25rem;
+    }
+    .buy-region:last-child { margin-bottom: 0; }
+    .buy-region-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .buy-store-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .buy-store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.5rem 0.9rem;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .buy-store-btn:hover {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+    .buy-store-btn svg { flex-shrink: 0; opacity: 0.5; }
+    .buy-disclaimer {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* COMPARE CTA */
+    .compare-cta {
+      background: var(--blue-light);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .compare-cta p { font-size: 0.9rem; font-weight: 600; color: var(--blue-dark); }
+    .compare-cta-btn {
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .compare-cta-btn:hover { background: var(--blue-dark); }
+
+    /* COMMENTS */
+    .comments-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+    .comment-form { margin-bottom: 1.75rem; }
+    .comment-form textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      resize: vertical;
+      min-height: 90px;
+      outline: none;
+      transition: border-color 0.15s;
+      background: var(--bg);
+    }
+    .comment-form textarea:focus { border-color: var(--blue); }
+    .comment-form-row { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .comment-form input {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s;
+      background: var(--bg);
+    }
+    .comment-form input:focus { border-color: var(--blue); }
+    .comment-submit {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.25rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background 0.15s;
+      white-space: nowrap;
+    }
+    .comment-submit:hover { background: var(--blue-dark); }
+    .comment-list { display: flex; flex-direction: column; gap: 1rem; }
+    .comment-item { padding: 1rem; background: var(--bg); border-radius: 10px; border: 1px solid var(--border); }
+    .comment-meta { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.4rem; display: flex; gap: 0.75rem; }
+    .comment-author { font-weight: 700; color: var(--ink); }
+    .comment-body { font-size: 0.875rem; line-height: 1.6; }
+    .no-comments { text-align: center; padding: 2rem; color: var(--muted); font-size: 0.875rem; }
+
+    /* NOT FOUND */
+    .not-found { text-align: center; padding: 4rem 1.5rem; }
+    .not-found h2 { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2rem; margin-bottom: 0.75rem; }
+
+    footer { background: #0f172a; color: rgba(255,255,255,0.5); text-align: center; padding: 2rem 1.5rem; font-size: 0.8rem; }
+    footer strong { color: #fff; font-family: 'Outfit', sans-serif; }
+
+    @media (max-width: 640px) {
+      .review-header { grid-template-columns: 1fr; }
+      .pros-cons { grid-template-columns: 1fr; }
+      .big-score-num { font-size: 4rem; }
+      .nav-links { display: none; }
+      .score-cat-label { width: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Mr<span>Point</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="hub.html">A Series Hub</a>
+      <a href="compare.html">Compare</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page" id="page-content">
+  <!-- Filled by JS -->
+</div>
+
+<footer>
+  <strong>MrPoint</strong> — Straight tech. No fluff.<br>
+  <span style="margin-top:0.5rem;display:block;">Prices are approximate and may vary by region.</span>
+</footer>
+
+<script src="data.js"></script>
+<script src="currency.js"></script>
+<script>
+  injectCurrencyPicker('.nav-inner');
+
+  const params = new URLSearchParams(window.location.search);
+  const phoneId = params.get('id');
+  const phone = phones.find(p => p.id === phoneId);
+  const page = document.getElementById('page-content');
+
+  const externalIcon = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`;
+
+  function buildBuySection(phone) {
+    const q = encodeURIComponent(`Samsung ${phone.name}`);
+    const qShort = encodeURIComponent(phone.name);
+
+    const saStores = [
+      { name: 'Takealot',    url: `https://www.takealot.com/all?_sb=1&_si=&qsearch=Samsung+${qShort}` },
+      { name: 'HiFiCorp',   url: `https://www.hificorp.co.za/search/results/?q=Samsung+${qShort}` },
+      { name: 'Incredible', url: `https://www.incredible.co.za/catalogsearch/result/?q=Samsung+${qShort}` },
+      { name: 'Cellucity',  url: `https://cellucity.co.za/?s=Samsung+${qShort}` },
+      { name: 'Game',       url: `https://www.game.co.za/search/?q=Samsung+${qShort}` },
+      { name: 'PriceCheck', url: `https://www.pricecheck.co.za/search?search=Samsung+${qShort}` },
+      { name: 'Samsung SA', url: `https://www.samsung.com/za/smartphones/galaxy-a/` },
+    ];
+
+    const intlStores = [
+      { name: 'Amazon US',   url: `https://www.amazon.com/s?k=${q}` },
+      { name: 'Amazon UK',   url: `https://www.amazon.co.uk/s?k=${q}` },
+      { name: 'Amazon DE',   url: `https://www.amazon.de/s?k=${q}` },
+      { name: 'Amazon IN',   url: `https://www.amazon.in/s?k=${q}` },
+      { name: 'Best Buy',    url: `https://www.bestbuy.com/site/searchpage.jsp?st=${q}` },
+      { name: 'Samsung Global', url: `https://www.samsung.com/global/galaxy/galaxy-a/` },
+      { name: 'eBay',        url: `https://www.ebay.com/sch/i.html?_nkw=${q}` },
+    ];
+
+    const storeBtn = (s) =>
+      `<a href="${s.url}" target="_blank" rel="noopener" class="buy-store-btn">${s.name} ${externalIcon}</a>`;
+
+    return `
+      <div class="buy-section">
+        <div class="section-heading">Where to Buy</div>
+        <div class="buy-region">
+          <div class="buy-region-label">🇿🇦 South Africa</div>
+          <div class="buy-store-grid">${saStores.map(storeBtn).join('')}</div>
+        </div>
+        <div class="buy-region">
+          <div class="buy-region-label">🌍 International</div>
+          <div class="buy-store-grid">${intlStores.map(storeBtn).join('')}</div>
+        </div>
+        <div class="buy-disclaimer">
+          Prices shown on this site (${formatPrice(phone.price)}) are rough estimates based on SA retail listings. Actual prices vary by store, region, and availability. Always check the retailer directly for the latest price.
+        </div>
+      </div>
+    `;
+  }
+
+  function barColor(s) {
+    if (s >= 8) return '#22c55e';
+    if (s >= 6) return '#eab308';
+    return '#ef4444';
+  }
+
+  const cats = [
+    { key: 'camera', label: 'Camera', icon: '📸' },
+    { key: 'performance', label: 'Performance', icon: '⚡' },
+    { key: 'battery', label: 'Battery', icon: '🔋' },
+    { key: 'display', label: 'Display', icon: '🖥️' },
+    { key: 'value', label: 'Value', icon: '💰' },
+  ];
+
+  if (!phone) {
+    document.title = 'Phone Not Found — Mr Point';
+    page.innerHTML = `
+      <div class="not-found">
+        <h2>Phone not found</h2>
+        <p style="color:var(--muted); margin-bottom:1.5rem;">We couldn't find a review for that phone.</p>
+        <a href="hub.html" style="color:var(--blue); font-weight:600;">← Back to A Series Hub</a>
+      </div>
+    `;
+  } else {
+    document.title = `${phone.name} Review — Mr Point`;
+
+    // Load comments from localStorage
+    const storageKey = `comments_${phone.id}`;
+    let comments = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+    function renderComments() {
+      const list = document.getElementById('comment-list');
+      if (comments.length === 0) {
+        list.innerHTML = '<div class="no-comments">No comments yet. Be the first to share your thoughts!</div>';
+      } else {
+        list.innerHTML = comments.map(c => `
+          <div class="comment-item">
+            <div class="comment-meta">
+              <span class="comment-author">${c.name}</span>
+              <span>${c.date}</span>
+            </div>
+            <div class="comment-body">${c.body}</div>
+          </div>
+        `).join('');
+      }
+    }
+
+    const scoreBars = cats.map(c => `
+      <div class="score-cat">
+        <span class="score-cat-icon">${c.icon}</span>
+        <span class="score-cat-label">${c.label}</span>
+        <div class="score-cat-track">
+          <div class="score-cat-fill" style="width:0%; background:${barColor(phone.scores[c.key])};" data-target="${phone.scores[c.key] * 10}"></div>
+        </div>
+        <span class="score-cat-num" style="color:${barColor(phone.scores[c.key])}">${phone.scores[c.key]}</span>
+      </div>
+    `).join('');
+
+    const specRows = [
+      { label: 'Released', val: phone.year },
+      { label: 'Price', val: formatPrice(phone.price) },
+      { label: 'Chipset', val: phone.chipset },
+      { label: 'Display', val: phone.display },
+      { label: 'RAM', val: phone.ram },
+      { label: 'Storage', val: phone.storage },
+      { label: 'Battery', val: phone.battery },
+      { label: 'Main Camera', val: phone.camera },
+      { label: 'Selfie', val: phone.selfie },
+      { label: '5G', val: phone.fiveG ? '✓ Yes' : '✗ No' },
+    ];
+
+    page.innerHTML = `
+      <div class="breadcrumb">
+        <a href="index.html">Home</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="hub.html">A Series Hub</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>${phone.name} Review</span>
+      </div>
+
+      <div class="review-header">
+        <div>
+          <div class="review-tag">Samsung A Series · ${phone.year}</div>
+          <h1 class="review-title">${phone.name}</h1>
+          <div class="review-sub">
+            <span>${formatPrice(phone.price)}</span>
+            <span>${phone.chipset}</span>
+            <span>${phone.display}</span>
+            ${phone.fiveG ? '<span style="color:var(--blue); font-weight:600;">5G</span>' : '<span>4G</span>'}
+          </div>
+        </div>
+        <div class="big-score-block">
+          <div class="big-score-num" style="color:${phone.scoreInfo.color}">${phone.overall}<span class="big-score-denom">/10</span></div>
+          <div class="big-score-verdict" style="color:${phone.scoreInfo.color}">${phone.scoreInfo.label}</div>
+          <div class="big-score-label">Mr Point Score</div>
+        </div>
+      </div>
+
+      <div class="score-breakdown">
+        <div class="section-heading">Score Breakdown</div>
+        ${scoreBars}
+      </div>
+
+      <div class="verdict-box">
+        <div class="verdict-tag-inner">Mr Point Says</div>
+        <p class="verdict-text">${phone.mrPointSays}</p>
+      </div>
+
+      <div class="pros-cons">
+        <div class="pros-card">
+          <div class="pc-heading">✅ Pros</div>
+          ${phone.pros.map(p => `<div class="pc-item"><div class="pc-dot"></div><span>${p}</span></div>`).join('')}
+        </div>
+        <div class="cons-card">
+          <div class="pc-heading">❌ Cons</div>
+          ${phone.cons.map(c => `<div class="pc-item"><div class="pc-dot"></div><span>${c}</span></div>`).join('')}
+        </div>
+      </div>
+
+      <div class="specs-table">
+        <div class="specs-table-header">
+          <div class="section-heading" style="margin-bottom:0;">Full Specs</div>
+        </div>
+        ${specRows.map(r => `
+          <div class="spec-row">
+            <div class="spec-key">${r.label}</div>
+            <div class="spec-val">${r.val}</div>
+          </div>
+        `).join('')}
+      </div>
+
+      ${buildBuySection(phone)}
+
+      <div class="compare-cta">
+        <p>Want to see how the ${phone.name} stacks up against another phone?</p>
+        <a href="compare.html?a=${phone.id}" class="compare-cta-btn">Compare This Phone →</a>
+      </div>
+
+      <div class="comments-section">
+        <div class="section-heading">Comments</div>
+        <div class="comment-form">
+          <div class="comment-form-row">
+            <input type="text" id="comment-name" placeholder="Your name"/>
+            <button class="comment-submit" onclick="submitComment()">Post Comment</button>
+          </div>
+          <textarea id="comment-body" placeholder="Share your experience with the ${phone.name}…"></textarea>
+        </div>
+        <div class="comment-list" id="comment-list"></div>
+      </div>
+    `;
+
+    renderComments();
+
+    // Animate score bars
+    setTimeout(() => {
+      document.querySelectorAll('.score-cat-fill').forEach(bar => {
+        bar.style.width = bar.dataset.target + '%';
+      });
+    }, 100);
+
+    window.submitComment = function() {
+      const name = document.getElementById('comment-name').value.trim();
+      const body = document.getElementById('comment-body').value.trim();
+      if (!name || !body) { alert('Please enter your name and a comment.'); return; }
+      const now = new Date();
+      comments.unshift({
+        name,
+        body,
+        date: now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
+      });
+      localStorage.setItem(storageKey, JSON.stringify(comments));
+      document.getElementById('comment-name').value = '';
+      document.getElementById('comment-body').value = '';
+      renderComments();
+    };
+  }
+</script>
+</body>
+</html>

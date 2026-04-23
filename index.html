@@ -3,349 +3,400 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EchoPoint — Choose Your Side</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <title>Mr Point — Straight Tech Reviews</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --story-bg: #0d0b10;
-      --story-accent: #9b6eff;
-      --story-gold: #c8a97e;
-      --podcast-bg: #1e2128;
-      --podcast-ink: #e8e6e0;
-      --podcast-accent: #e8875a;
+      --bg: #f9fafb; --bg-card: #fff; --ink: #0f0f0f; --muted: #6b7280;
+      --border: #e5e7eb; --blue: #2563eb; --blue-dark: #1d4ed8; --blue-light: #eff6ff;
+      --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-hover: 0 4px 16px rgba(0,0,0,0.12), 0 8px 28px rgba(0,0,0,0.08);
     }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
 
-    html, body {
-      width: 100%; height: 100%;
-      overflow: hidden;
-      font-family: 'Syne', sans-serif;
-    }
+    /* ── NAV ── */
+    nav { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+    .nav-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; flex-shrink: 0; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 0.15rem; flex-wrap: wrap; }
+    .nav-links a { font-size: 0.82rem; font-weight: 500; color: var(--muted); padding: 0.45rem 0.75rem; border-radius: 8px; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    .nav-links a:hover { background: var(--bg); color: var(--ink); }
+    .nav-links a.active { color: var(--blue); background: var(--blue-light); }
 
-    /* ── SPLIT CONTAINER ── */
-    .split {
-      display: flex;
-      width: 100%; height: 100vh;
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+      color: #fff;
+      padding: 5rem 1.5rem 4rem;
+      text-align: center;
       position: relative;
-    }
-
-    /* ── EACH HALF ── */
-    .half {
-      flex: 1;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
       overflow: hidden;
-      transition: flex 0.7s cubic-bezier(0.77, 0, 0.175, 1);
     }
-
-    .half:hover { flex: 1.55; }
-    .half:hover .half-cta { opacity: 1; transform: translateY(0); }
-    .half:hover .half-label { letter-spacing: 0.22em; }
-
-    /* ── STORIES HALF ── */
-    .half--stories {
-      background: var(--story-bg);
-    }
-
-    /* Particle stars */
-    .half--stories::before {
+    .hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        radial-gradient(1px 1px at 20% 30%, rgba(200,169,126,0.6) 0%, transparent 100%),
-        radial-gradient(1px 1px at 60% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 80% 50%, rgba(200,169,126,0.4) 0%, transparent 100%),
-        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 10% 80%, rgba(200,169,126,0.5) 0%, transparent 100%),
-        radial-gradient(1px 1px at 70% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
-        radial-gradient(1.5px 1.5px at 30% 55%, rgba(155,110,255,0.3) 0%, transparent 100%),
-        radial-gradient(1px 1px at 90% 25%, rgba(255,255,255,0.4) 0%, transparent 100%);
+      background: radial-gradient(ellipse at 65% 0%, rgba(96,165,250,0.15) 0%, transparent 60%);
       pointer-events: none;
     }
-
-    /* Glow orb */
-    .half--stories::after {
-      content: '';
-      position: absolute;
-      bottom: -20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 70%;
-      height: 60%;
-      background: radial-gradient(ellipse, rgba(155,110,255,0.12) 0%, transparent 70%);
-      pointer-events: none;
+    .hero-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #93c5fd;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1.5rem;
     }
+    .hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.25rem;
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .hero h1 em { font-style: normal; color: #60a5fa; }
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.15rem);
+      color: rgba(255,255,255,0.6);
+      max-width: 500px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: #fff; color: var(--blue-dark); font-weight: 700; font-size: 0.95rem; padding: 0.85rem 2rem; border-radius: 10px; transition: transform 0.15s, box-shadow 0.15s; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+    .btn-secondary { background: rgba(255,255,255,0.1); color: #fff; font-weight: 600; font-size: 0.95rem; padding: 0.85rem 2rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); transition: background 0.15s; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.18); }
+    .hero-stats { display: flex; gap: 2.5rem; justify-content: center; margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid rgba(255,255,255,0.1); flex-wrap: wrap; }
+    .hero-stat { text-align: center; }
+    .hero-stat-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2rem; line-height: 1; }
+    .hero-stat-label { font-size: 0.72rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.3rem; }
 
-    /* Candlelight flicker */
-    .candle {
-      position: absolute;
-      bottom: 12%;
-      left: 50%;
-      transform: translateX(-50%);
+    /* ── SECTION ── */
+    .section { max-width: 1200px; margin: 0 auto; padding: 4rem 1.5rem; }
+    .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap; }
+    .section-title { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.75rem; letter-spacing: -0.02em; }
+    .section-sub { font-size: 0.875rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── CATEGORY CARDS ── */
+    .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.25rem; }
+
+    .cat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: var(--shadow);
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 0;
-    }
-    .candle-flame {
-      width: 14px; height: 22px;
-      background: radial-gradient(ellipse at 50% 80%, #fff8e0 0%, #ffcf6b 30%, #ff8c00 65%, transparent 100%);
-      border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
-      animation: flicker 2.5s ease-in-out infinite;
-      filter: blur(0.5px);
       position: relative;
-      z-index: 2;
+      overflow: hidden;
     }
-    .candle-body {
-      width: 10px; height: 50px;
-      background: linear-gradient(to bottom, #e8dcc8, #c8b898);
-      border-radius: 2px;
-    }
-    @keyframes flicker {
-      0%, 100% { transform: scaleX(1) scaleY(1) rotate(-1deg); opacity: 1; }
-      25% { transform: scaleX(0.85) scaleY(1.08) rotate(1deg); opacity: 0.9; }
-      50% { transform: scaleX(1.05) scaleY(0.95) rotate(-0.5deg); opacity: 1; }
-      75% { transform: scaleX(0.9) scaleY(1.05) rotate(1.5deg); opacity: 0.95; }
-    }
-
-    /* ── PODCAST HALF ── */
-    .half--podcast {
-      background: #1e2128;
-    }
-
-    .half--podcast::before {
+    .cat-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); }
+    .cat-card::before {
       content: '';
       position: absolute;
-      top: -30%;
-      right: -20%;
-      width: 70%;
-      height: 70%;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(232,135,90,0.07) 0%, transparent 70%);
-      pointer-events: none;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 16px 16px 0 0;
     }
+    .cat-card--phones::before  { background: linear-gradient(90deg, #2563eb, #7c3aed); }
+    .cat-card--laptops::before { background: linear-gradient(90deg, #059669, #0891b2); }
+    .cat-card--pcs::before     { background: linear-gradient(90deg, #dc2626, #ea580c); }
+    .cat-card--audio::before   { background: linear-gradient(90deg, #7c3aed, #db2777); }
 
-    /* Sound wave lines */
-    .podcast-waves {
-      position: absolute;
-      bottom: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      height: 50px;
-    }
-    .podcast-waves span {
-      display: block;
-      width: 3px;
-      background: #e8875a;
-      border-radius: 2px;
-      opacity: 0.35;
-      animation: wv 1.6s ease-in-out infinite;
-    }
-    .podcast-waves span:nth-child(1) { height: 14px; animation-delay: 0s; }
-    .podcast-waves span:nth-child(2) { height: 26px; animation-delay: 0.15s; }
-    .podcast-waves span:nth-child(3) { height: 40px; animation-delay: 0.3s; }
-    .podcast-waves span:nth-child(4) { height: 50px; animation-delay: 0.45s; }
-    .podcast-waves span:nth-child(5) { height: 34px; animation-delay: 0.3s; }
-    .podcast-waves span:nth-child(6) { height: 22px; animation-delay: 0.15s; }
-    .podcast-waves span:nth-child(7) { height: 14px; animation-delay: 0s; }
-    @keyframes wv {
-      0%, 100% { transform: scaleY(0.4); }
-      50% { transform: scaleY(1); }
-    }
-
-    /* ── CENTER DIVIDER ── */
-    .divider {
-      position: absolute;
-      left: 50%;
-      top: 0; bottom: 0;
-      width: 1px;
-      background: linear-gradient(to bottom, transparent, rgba(150,150,150,0.3) 30%, rgba(150,150,150,0.3) 70%, transparent);
-      pointer-events: none;
-      z-index: 10;
-      transition: opacity 0.5s;
-    }
-
-    /* ── LOGO CENTER ── */
-    .center-logo {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 20;
-      text-align: center;
-      pointer-events: none;
-    }
-    .center-logo-ring {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 0;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-    }
-    .center-logo-text {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 1rem;
-      color: var(--podcast-ink);
-      letter-spacing: -0.02em;
-      line-height: 1;
-    }
-    .center-logo-text span { color: var(--podcast-accent); }
-
-    /* ── HALF CONTENT ── */
-    .half-content {
-      position: relative;
-      z-index: 5;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .half-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1.25rem;
-      opacity: 0.5;
-    }
-
-    .half--stories .half-eyebrow { color: var(--story-gold); }
-    .half--podcast .half-eyebrow { color: #e8875a; }
-
-    .half-label {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.5rem, 6vw, 6rem);
-      font-weight: 300;
-      line-height: 1;
-      letter-spacing: 0.08em;
-      transition: letter-spacing 0.5s ease;
-      margin-bottom: 1rem;
-    }
-
-    .half--stories .half-label {
-      color: #fff;
-      font-style: italic;
-    }
-
-    .half--podcast .half-label {
-      color: #e8e6e0;
-      font-style: normal;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      font-size: clamp(3rem, 5.5vw, 5.5rem);
-    }
-
-    .half-desc {
-      font-size: 0.88rem;
-      line-height: 1.75;
-      max-width: 240px;
-      margin: 0 auto 2rem;
-      font-weight: 400;
-    }
-    .half--stories .half-desc { color: rgba(255,255,255,0.45); font-family: 'Cormorant Garamond', serif; font-size: 1rem; }
-    .half--podcast .half-desc { color: rgba(232,230,224,0.45); font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.05em; }
-
-    .half-cta {
+    .cat-icon { font-size: 2.25rem; margin-bottom: 1rem; }
+    .cat-name { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .cat-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; flex: 1; margin-bottom: 1.25rem; }
+    .cat-meta { display: flex; gap: 1rem; margin-bottom: 1.25rem; }
+    .cat-meta-item { font-size: 0.75rem; font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 0.3rem; }
+    .cat-cta {
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      text-decoration: none;
-      padding: 0.7rem 1.6rem;
-      border-radius: 2px;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.35s ease, transform 0.35s ease, background 0.2s;
+      gap: 0.4rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.6rem 1.1rem;
+      border-radius: 8px;
+      width: fit-content;
+      transition: background 0.15s;
     }
+    .cat-card--phones  .cat-cta { background: #eff6ff; color: #1d4ed8; }
+    .cat-card--phones  .cat-cta:hover { background: #dbeafe; }
+    .cat-card--laptops .cat-cta { background: #ecfdf5; color: #065f46; }
+    .cat-card--laptops .cat-cta:hover { background: #d1fae5; }
+    .cat-card--pcs     .cat-cta { background: #fff7ed; color: #9a3412; }
+    .cat-card--pcs     .cat-cta:hover { background: #fed7aa; }
+    .cat-card--audio   .cat-cta { background: #fdf4ff; color: #6b21a8; }
+    .cat-card--audio   .cat-cta:hover { background: #f3e8ff; }
 
-    .half--stories .half-cta {
-      background: rgba(155,110,255,0.15);
-      color: var(--story-accent);
-      border: 1px solid rgba(155,110,255,0.3);
+    /* ── HOW IT WORKS ── */
+    .how-section { background: #fff; padding: 4rem 0; }
+    .how-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; }
+    .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem; }
+    .how-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; text-align: center; }
+    .how-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .how-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; }
+    .how-desc { font-size: 0.825rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── FEATURED SECTION ── */
+    .featured-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+    .featured-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+      cursor: pointer;
     }
-    .half--stories .half-cta:hover { background: rgba(155,110,255,0.25); }
+    .featured-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .featured-score { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2rem; line-height: 1; min-width: 48px; text-align: center; }
+    .featured-score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .featured-name { font-weight: 700; font-size: 0.95rem; }
+    .featured-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .featured-badge { font-size: 0.65rem; font-weight: 700; background: #dbeafe; color: var(--blue); padding: 0.2rem 0.5rem; border-radius: 4px; display: inline-block; margin-top: 0.35rem; }
 
-    .half--podcast .half-cta {
-      background: #e8875a;
-      color: #1e2128;
-      border: none;
-    }
-    .half--podcast .half-cta:hover { background: #e8875a; }
+    /* ── FOOTER ── */
+    footer { background: #0f172a; color: rgba(255,255,255,0.5); text-align: center; padding: 2.5rem 1.5rem; font-size: 0.82rem; }
+    footer strong { color: #fff; font-family: 'Outfit', sans-serif; font-size: 1.1rem; }
+    .footer-links { display: flex; gap: 1.5rem; justify-content: center; margin-top: 1rem; flex-wrap: wrap; }
+    .footer-links a { color: rgba(255,255,255,0.4); font-size: 0.8rem; transition: color 0.15s; }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
 
-    /* ── MOBILE ── */
     @media (max-width: 640px) {
-      .split { flex-direction: column; overflow-y: auto; }
-      .half { min-height: 50vh; flex: 1 !important; }
-      .divider { display: none; }
-      .center-logo { display: none; }
-      .half-cta { opacity: 1; transform: none; }
-      .half--podcast .half-label { font-size: 3rem; }
-      .half--stories .half-label { font-size: 3rem; }
+      .nav-links { display: none; }
+      .hero { padding: 3.5rem 1.25rem 3rem; }
+      .hero-stats { gap: 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-<div class="split">
-
-  <!-- STORIES HALF -->
-  <div class="half half--stories" onclick="window.location='stories/index.html'">
-    <div class="half-content">
-      <p class="half-eyebrow">Fiction · Audio · Read-Along</p>
-      <h2 class="half-label">Stories</h2>
-      <p class="half-desc">Fictional tales told in voice and word. Listen as you read, or read as you listen.</p>
-      <a href="stories/index.html" class="half-cta">
-        Enter Stories
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="candle">
-      <div class="candle-flame"></div>
-      <div class="candle-body"></div>
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Mr<span>Point</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="hub.html">📱 Phones</a>
+      <a href="laptops.html">💻 Laptops</a>
+      <a href="pcs.html">🖥️ PCs</a>
+      <a href="compare.html">Compare</a>
     </div>
   </div>
+</nav>
 
-  <!-- CENTER LOGO -->
-  <div class="divider"></div>
-  <div class="center-logo">
-    <div class="center-logo-ring">
-      <div class="center-logo-text">E<span>P</span></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Phones · Laptops · PCs · Audio</div>
+  <h1>Tech reviews that get to<br><em>the point.</em></h1>
+  <p>No 20-minute videos. No spec walls. Straight scores, honest takes, and clear answers on what's worth your money.</p>
+  <div class="hero-actions">
+    <a href="hub.html" class="btn-primary">Browse Phones →</a>
+    <a href="compare.html" class="btn-secondary">Compare Phones</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="total-reviews">—</div>
+      <div class="hero-stat-label">Reviews</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">4</div>
+      <div class="hero-stat-label">Categories</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">5</div>
+      <div class="hero-stat-label">Score Factors</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">0</div>
+      <div class="hero-stat-label">Sponsored Posts</div>
     </div>
   </div>
+</section>
 
-  <!-- PODCAST HALF -->
-  <div class="half half--podcast" onclick="window.location='podcast/index.html'">
-    <div class="half-content">
-      <p class="half-eyebrow">Random Topics · Deep Dives · Episodes</p>
-      <h2 class="half-label">Podcast</h2>
-      <p class="half-desc">Any topic. No agenda. Just talking about whatever's interesting.</p>
-      <a href="podcast/index.html" class="half-cta">
-        Enter Podcast
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </a>
-    </div>
-    <div class="podcast-waves">
-      <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+<!-- CATEGORIES -->
+<div class="section">
+  <div class="section-header">
+    <div>
+      <h2 class="section-title">Browse by Category</h2>
+      <p class="section-sub">Pick a category and find the right device for your budget.</p>
     </div>
   </div>
+  <div class="category-grid">
 
+    <div class="cat-card cat-card--phones" onclick="window.location='hub.html'">
+      <div class="cat-icon">📱</div>
+      <div class="cat-name">Phones</div>
+      <div class="cat-desc">Samsung Galaxy A series, and more. Find the right phone for your budget with straight scores on camera, performance, battery, display and value.</div>
+      <div class="cat-meta">
+        <span class="cat-meta-item" id="phone-count">— reviews</span>
+        <span class="cat-meta-item">🇿🇦 SA prices</span>
+      </div>
+      <a href="hub.html" class="cat-cta">Browse Phones →</a>
+    </div>
+
+    <div class="cat-card cat-card--laptops" onclick="window.location='laptops.html'">
+      <div class="cat-icon">💻</div>
+      <div class="cat-name">Laptops</div>
+      <div class="cat-desc">Budget laptops, gaming rigs, MacBooks and ultrabooks. Scored on performance, display, battery life, build quality and value for money.</div>
+      <div class="cat-meta">
+        <span class="cat-meta-item" id="laptop-count">— reviews</span>
+        <span class="cat-meta-item">All budgets</span>
+      </div>
+      <a href="laptops.html" class="cat-cta">Browse Laptops →</a>
+    </div>
+
+    <div class="cat-card cat-card--pcs" onclick="window.location='pcs.html'">
+      <div class="cat-icon">🖥️</div>
+      <div class="cat-name">PCs & Desktops</div>
+      <div class="cat-desc">Pre-built desktops and custom PC builds. Scored on performance per rand, upgradeability, thermals, connectivity and overall value.</div>
+      <div class="cat-meta">
+        <span class="cat-meta-item" id="pc-count">— reviews</span>
+        <span class="cat-meta-item">Gaming & work</span>
+      </div>
+      <a href="pcs.html" class="cat-cta">Browse PCs →</a>
+    </div>
+
+    <div class="cat-card cat-card--audio" onclick="window.location='#coming-soon'">
+      <div class="cat-icon">🎧</div>
+      <div class="cat-name">Audio & Accessories</div>
+      <div class="cat-desc">Earbuds, headphones, speakers, chargers and more. Honest scores on sound quality, comfort, battery and value — no marketing fluff.</div>
+      <div class="cat-meta">
+        <span class="cat-meta-item">Coming soon</span>
+      </div>
+      <span class="cat-cta" style="opacity:0.5; cursor:default;">Coming Soon</span>
+    </div>
+
+  </div>
 </div>
 
+<!-- TOP PICKS ACROSS ALL CATEGORIES -->
+<div style="background:#fff; padding: 4rem 0;">
+  <div class="section" style="padding-top:0; padding-bottom:0;">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">🏆 Top Picks Right Now</h2>
+        <p class="section-sub">The highest-scoring devices across all categories.</p>
+      </div>
+    </div>
+    <div class="featured-grid" id="top-picks"></div>
+  </div>
+</div>
+
+<!-- HOW SCORING WORKS -->
+<div class="how-section">
+  <div class="how-inner">
+    <div class="section-header" style="margin-bottom:0;">
+      <div>
+        <h2 class="section-title">How Mr Point scores devices</h2>
+        <p class="section-sub">Every review uses the same 5-factor system — scored out of 10, rolled into one overall Mr Point Score.</p>
+      </div>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">⚡</div>
+        <div class="how-title">Performance</div>
+        <div class="how-desc">How fast it opens apps, handles multitasking, gaming, and whether it stutters under real-world use.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">🖥️</div>
+        <div class="how-title">Display</div>
+        <div class="how-desc">Screen quality, resolution, brightness outdoors, refresh rate, and how it feels to actually use.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">🔋</div>
+        <div class="how-title">Battery / Thermals</div>
+        <div class="how-desc">How long it lasts on a charge and whether it gets dangerously hot under load.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">🔨</div>
+        <div class="how-title">Build Quality</div>
+        <div class="how-desc">Materials, sturdiness, keyboard feel (on laptops), and whether it feels like it's worth what you paid.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">💰</div>
+        <div class="how-title">Value for Money</div>
+        <div class="how-desc">Whether what you're paying matches what you're getting. Always the most important score.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>MrPoint</strong><br>
+  <span style="margin-top:0.5rem; display:block;">Straight tech. No fluff. No sponsors.</span>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="hub.html">Phones</a>
+    <a href="laptops.html">Laptops</a>
+    <a href="pcs.html">PCs</a>
+    <a href="compare.html">Compare</a>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="laptops-data.js"></script>
+<script src="pcs-data.js"></script>
+<script src="currency.js"></script>
+<script>
+  injectCurrencyPicker('.nav-inner');
+
+  // Count reviews
+  document.getElementById('total-reviews').textContent = (phones.length + laptops.length + pcs.length);
+  document.getElementById('phone-count').textContent = phones.length + ' reviews';
+  document.getElementById('laptop-count').textContent = laptops.length + ' reviews';
+  document.getElementById('pc-count').textContent = pcs.length + ' reviews';
+
+  function getScoreColor(s) {
+    if (s >= 7.5) return '#22c55e';
+    if (s >= 6) return '#eab308';
+    return '#ef4444';
+  }
+
+  // Top picks: best from each category
+  const allDevices = [
+    ...phones.map(p => ({ ...p, cat: 'Phone', href: `phone.html?id=${p.id}` })),
+    ...laptops.map(l => ({ ...l, cat: 'Laptop', href: `laptop.html?id=${l.id}` })),
+    ...pcs.map(p => ({ ...p, cat: 'PC', href: `pc.html?id=${p.id}` })),
+  ];
+
+  const topPicks = [...allDevices]
+    .sort((a, b) => b.overall - a.overall || b.year - a.year)
+    .slice(0, 6);
+
+  document.getElementById('top-picks').innerHTML = topPicks.map(d => `
+    <div class="featured-card" onclick="window.location='${d.href}'">
+      <div>
+        <div class="featured-score" style="color:${d.scoreInfo.color}">${d.overall}</div>
+        <div class="featured-score-label" style="color:${d.scoreInfo.color}">/10</div>
+      </div>
+      <div>
+        <div class="featured-name">${d.name}</div>
+        <div class="featured-sub">${d.year} · ${formatPrice(d.price)}</div>
+        <span class="featured-badge">${d.cat}</span>
+      </div>
+    </div>
+  `).join('');
+</script>
 </body>
 </html>

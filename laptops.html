@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Laptops — Mr Point</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9fafb;
+      --bg-card: #ffffff;
+      --ink: #0f0f0f;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --blue: #2563eb;
+      --blue-dark: #1d4ed8;
+      --blue-light: #eff6ff;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+      --shadow-hover: 0 4px 12px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAV */
+    nav { background: #fff; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem; letter-spacing: -0.03em; }
+    .nav-logo span { color: var(--blue); }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--muted); padding: 0.5rem 0.85rem; border-radius: 8px; transition: background 0.15s, color 0.15s; }
+    .nav-links a:hover { background: var(--bg); color: var(--ink); }
+    .nav-links a.active { color: var(--blue); background: var(--blue-light); }
+
+    /* PAGE HEADER */
+    .page-header {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      color: #fff;
+      padding: 3rem 1.5rem 2.5rem;
+    }
+    .page-header-inner { max-width: 1200px; margin: 0 auto; }
+    .breadcrumb { font-size: 0.78rem; color: rgba(255,255,255,0.45); margin-bottom: 0.75rem; }
+    .breadcrumb a { color: rgba(255,255,255,0.45); }
+    .breadcrumb a:hover { color: rgba(255,255,255,0.8); }
+    .page-header h1 { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: clamp(1.75rem, 4vw, 2.5rem); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
+    .page-header p { color: rgba(255,255,255,0.6); font-size: 0.95rem; }
+
+    /* FILTERS */
+    .filters-bar {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+    .filters-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .filter-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 0.25rem; }
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Inter', sans-serif;
+    }
+    .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .filter-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .filter-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
+    .search-wrap { margin-left: auto; position: relative; }
+    .search-input {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 0.4rem 0.85rem 0.4rem 2.25rem;
+      font-size: 0.85rem;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      width: 200px;
+      transition: border-color 0.15s;
+    }
+    .search-input:focus { border-color: var(--blue); }
+    .search-icon { position: absolute; left: 0.65rem; top: 50%; transform: translateY(-50%); color: var(--muted); }
+
+    /* RESULTS INFO */
+    .results-info {
+      max-width: 1200px;
+      margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+      font-size: 0.82rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .price-note { font-size: 0.75rem; color: var(--muted); display: flex; align-items: center; gap: 0.3rem; }
+
+    /* GRID */
+    .grid-wrap { max-width: 1200px; margin: 1.25rem auto 4rem; padding: 0 1.5rem; }
+    .laptop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+
+    /* LAPTOP CARD */
+    .laptop-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s; cursor: pointer; display: flex; flex-direction: column; }
+    .laptop-card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+    .laptop-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+    .laptop-card-name { font-weight: 700; font-size: 1rem; line-height: 1.3; }
+    .laptop-card-meta { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+    .score-badge { text-align: center; min-width: 52px; }
+    .score-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.75rem; line-height: 1; }
+    .score-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-top: 0.15rem; }
+    .score-bars { display: flex; flex-direction: column; gap: 0.55rem; margin-bottom: 1.25rem; }
+    .score-bar-row { display: flex; align-items: center; gap: 0.6rem; }
+    .score-bar-label { font-size: 0.7rem; color: var(--muted); width: 68px; flex-shrink: 0; }
+    .score-bar-track { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 999px; }
+    .score-bar-val { font-size: 0.7rem; font-weight: 600; color: var(--ink); width: 16px; text-align: right; flex-shrink: 0; }
+    .laptop-card-footer { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+    .laptop-price { font-weight: 700; font-size: 0.95rem; }
+    .cat-tag { font-size: 0.65rem; font-weight: 700; background: #f3f4f6; color: var(--muted); padding: 0.2rem 0.5rem; border-radius: 4px; }
+    .cat-tag.gaming { background: #fef3c7; color: #92400e; }
+    .cat-tag.premium { background: #ede9fe; color: #5b21b6; }
+    .cat-tag.budget { background: #dcfce7; color: #166534; }
+    .cat-tag.mid { background: #dbeafe; color: var(--blue-dark); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+    .empty-state h3 { font-size: 1.1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
+
+    /* SORT */
+    .sort-wrap { display: flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem; }
+    .sort-select {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 0.8rem;
+      padding: 0.4rem 0.75rem;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      outline: none;
+    }
+
+    footer { background: #0f172a; color: rgba(255,255,255,0.5); text-align: center; padding: 2rem 1.5rem; font-size: 0.8rem; }
+    footer strong { color: #fff; font-family: 'Outfit', sans-serif; }
+
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .search-wrap { margin-left: 0; width: 100%; }
+      .search-input { width: 100%; }
+      .filters-inner { gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Mr<span>Point</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="hub.html">📱 Phones</a>
+      <a href="laptops.html" class="active">💻 Laptops</a>
+      <a href="pcs.html">🖥️ PCs</a>
+      <a href="compare.html">Compare</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb"><a href="index.html">Home</a> / Laptops</div>
+    <h1>Laptops — Every Model Reviewed</h1>
+    <p>Straight scores. No filler. Budget to premium, gaming to workstation.</p>
+  </div>
+</div>
+
+<!-- FILTERS -->
+<div class="filters-bar">
+  <div class="filters-inner">
+    <span class="filter-label">Category</span>
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="Budget">Budget</button>
+    <button class="filter-btn" data-cat="Mid-Range">Mid-Range</button>
+    <button class="filter-btn" data-cat="Gaming">Gaming</button>
+    <button class="filter-btn" data-cat="Premium">Premium</button>
+
+    <div class="filter-sep"></div>
+    <span class="filter-label">Price</span>
+    <button class="filter-btn active" data-price="all">All</button>
+    <button class="filter-btn" data-price="0-10000">Under R10,000</button>
+    <button class="filter-btn" data-price="10000-20000">R10,000–R20,000</button>
+    <button class="filter-btn" data-price="20000-999999">R20,000+</button>
+
+    <div class="filter-sep"></div>
+    <div class="sort-wrap">
+      <span class="filter-label">Sort</span>
+      <select class="sort-select" id="sort-select">
+        <option value="score">Best Score</option>
+        <option value="price-asc">Price: Low–High</option>
+        <option value="price-desc">Price: High–Low</option>
+        <option value="name">Name A–Z</option>
+      </select>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" class="search-input" id="search-input" placeholder="Search laptops…"/>
+    </div>
+  </div>
+</div>
+
+<div class="results-info">
+  <span id="results-info"></span>
+  <span class="price-note">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    All prices are rough estimates — check retailer for exact price
+  </span>
+</div>
+
+<!-- LAPTOP GRID -->
+<div class="grid-wrap">
+  <div class="laptop-grid" id="laptop-grid"></div>
+  <div class="empty-state" id="empty-state" style="display:none;">
+    <h3>No laptops match your filters</h3>
+    <p>Try adjusting the category or price range.</p>
+  </div>
+</div>
+
+<footer>
+  <strong>MrPoint</strong> — Straight tech. No fluff.<br>
+  <span style="margin-top:0.5rem;display:block;">Prices are approximate and may vary by region.</span>
+</footer>
+
+<script src="data.js"></script>
+<script src="laptops-data.js"></script>
+<script src="currency.js"></script>
+<script>
+  injectCurrencyPicker('.nav-inner');
+
+  let activeCat = 'all';
+  let activePrice = 'all';
+  let searchQuery = '';
+  let sortOrder = 'score';
+
+  function barColor(score) {
+    if (score >= 8) return '#22c55e';
+    if (score >= 6) return '#eab308';
+    return '#ef4444';
+  }
+
+  function catTagClass(cat) {
+    if (cat === 'Gaming') return 'cat-tag gaming';
+    if (cat === 'Premium') return 'cat-tag premium';
+    if (cat === 'Budget') return 'cat-tag budget';
+    return 'cat-tag mid';
+  }
+
+  const scoreCats = [
+    { key: 'performance', label: 'Perf.' },
+    { key: 'display',     label: 'Display' },
+    { key: 'battery',     label: 'Battery' },
+    { key: 'build',       label: 'Build' },
+    { key: 'value',       label: 'Value' },
+  ];
+
+  function laptopCard(laptop) {
+    const bars = scoreCats.map(c => `
+      <div class="score-bar-row">
+        <span class="score-bar-label">${c.label}</span>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" style="width:${laptop.scores[c.key]*10}%; background:${barColor(laptop.scores[c.key])};"></div>
+        </div>
+        <span class="score-bar-val">${laptop.scores[c.key]}</span>
+      </div>
+    `).join('');
+
+    return `
+      <div class="laptop-card" onclick="window.location='laptop.html?id=${laptop.id}'">
+        <div class="laptop-card-top">
+          <div>
+            <div class="laptop-card-name">${laptop.name}</div>
+            <div class="laptop-card-meta">${laptop.year} · ${laptop.cpu.split(' ').slice(0,4).join(' ')}</div>
+          </div>
+          <div class="score-badge">
+            <div class="score-num" style="color:${laptop.scoreInfo.color}">${laptop.overall}</div>
+            <div class="score-label" style="color:${laptop.scoreInfo.color}">${laptop.scoreInfo.label}</div>
+          </div>
+        </div>
+        <div class="score-bars">${bars}</div>
+        <div class="laptop-card-footer">
+          <span class="laptop-price">${formatPrice(laptop.price)}</span>
+          <span class="${catTagClass(laptop.category)}">${laptop.category}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  function applyFilters() {
+    let filtered = [...laptops];
+
+    if (activeCat !== 'all') filtered = filtered.filter(l => l.category === activeCat);
+    if (activePrice !== 'all') {
+      const [min, max] = activePrice.split('-').map(Number);
+      filtered = filtered.filter(l => l.price >= min && l.price <= max);
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(l =>
+        l.name.toLowerCase().includes(q) ||
+        l.cpu.toLowerCase().includes(q) ||
+        l.brand.toLowerCase().includes(q)
+      );
+    }
+
+    if (sortOrder === 'score') filtered.sort((a, b) => b.overall - a.overall);
+    else if (sortOrder === 'price-asc') filtered.sort((a, b) => a.price - b.price);
+    else if (sortOrder === 'price-desc') filtered.sort((a, b) => b.price - a.price);
+    else if (sortOrder === 'name') filtered.sort((a, b) => a.name.localeCompare(b.name));
+
+    const grid = document.getElementById('laptop-grid');
+    const empty = document.getElementById('empty-state');
+    const info = document.getElementById('results-info');
+
+    info.textContent = `Showing ${filtered.length} of ${laptops.length} laptops`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+    } else {
+      grid.innerHTML = filtered.map(laptopCard).join('');
+      empty.style.display = 'none';
+    }
+  }
+
+  // Category filter buttons
+  document.querySelectorAll('[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      applyFilters();
+    });
+  });
+
+  // Price filter buttons
+  document.querySelectorAll('[data-price]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-price]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activePrice = btn.dataset.price;
+      applyFilters();
+    });
+  });
+
+  // Sort
+  document.getElementById('sort-select').addEventListener('change', e => {
+    sortOrder = e.target.value;
+    applyFilters();
+  });
+
+  // Search
+  document.getElementById('search-input').addEventListener('input', e => {
+    searchQuery = e.target.value.trim();
+    applyFilters();
+  });
+
+  applyFilters();
+</script>
+</body>
+</html>
