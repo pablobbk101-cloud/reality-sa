@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PC Review — Mr Point</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="mrpoint-mobile.css"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -212,9 +213,11 @@
 
 <script src="data.js"></script>
 <script src="pcs-data.js"></script>
+<script src="mrpoint-mobile.js"></script>
 <script src="currency.js"></script>
 <script>
-  injectCurrencyPicker('.nav-inner');
+  initMobileShell({ title: 'Jump to another category quickly', label: 'Review' });
+  injectCurrencyPicker('.nav-utility');
 
   const params = new URLSearchParams(window.location.search);
   const pcId = params.get('id');

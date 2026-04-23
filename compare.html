@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Compare Phones — Mr Point</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="mrpoint-mobile.css"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -372,9 +373,11 @@
 </footer>
 
 <script src="data.js"></script>
+<script src="mrpoint-mobile.js"></script>
 <script src="currency.js"></script>
 <script>
-  injectCurrencyPicker('.nav-inner');
+  initMobileShell({ title: 'Pick two devices and compare cleanly', label: 'Compare' });
+  injectCurrencyPicker('.nav-utility');
 
   const cats = [
     { key: 'camera', label: 'Camera', icon: '📸' },
