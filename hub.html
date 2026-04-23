@@ -64,36 +64,56 @@
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
-      gap: 0.75rem;
-      align-items: center;
+      gap: 0.9rem;
+      align-items: flex-start;
       flex-wrap: wrap;
     }
-    .filter-label { font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 0.25rem; }
+    .filters-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-width: 0;
+    }
+    .filter-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+    .filter-label { font-size: 0.72rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
     .filter-btn {
       border: 1px solid var(--border);
       background: var(--bg);
       color: var(--muted);
       font-size: 0.8rem;
-      font-weight: 500;
-      padding: 0.4rem 0.85rem;
-      border-radius: 8px;
+      font-weight: 600;
+      padding: 0.48rem 0.82rem;
+      border-radius: 999px;
       cursor: pointer;
       transition: all 0.15s;
       font-family: 'Inter', sans-serif;
+      white-space: nowrap;
     }
     .filter-btn:hover { border-color: var(--blue); color: var(--blue); }
     .filter-btn.active { background: var(--blue); border-color: var(--blue); color: #fff; }
     .filter-sep { width: 1px; height: 24px; background: var(--border); flex-shrink: 0; }
-    .search-wrap { margin-left: auto; position: relative; }
+    .search-wrap {
+      margin-left: auto;
+      position: relative;
+      min-width: 220px;
+      flex: 1 1 220px;
+      max-width: 280px;
+      align-self: flex-end;
+    }
     .search-input {
       border: 1px solid var(--border);
       background: var(--bg);
-      border-radius: 8px;
-      padding: 0.4rem 0.85rem 0.4rem 2.25rem;
+      border-radius: 999px;
+      padding: 0.55rem 0.95rem 0.55rem 2.25rem;
       font-size: 0.85rem;
       font-family: 'Inter', sans-serif;
       outline: none;
-      width: 200px;
+      width: 100%;
       transition: border-color 0.15s;
     }
     .search-input:focus { border-color: var(--blue); }
@@ -162,18 +182,20 @@
     .empty-state h3 { font-size: 1.1rem; font-weight: 600; color: var(--ink); margin-bottom: 0.5rem; }
 
     /* SORT */
-    .sort-wrap { display: flex; align-items: center; gap: 0.5rem; margin-left: 0.5rem; }
+    .sort-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 0.45rem; min-width: 180px; }
     .sort-select {
       border: 1px solid var(--border);
       background: var(--bg);
       color: var(--ink);
       font-size: 0.8rem;
-      padding: 0.4rem 0.75rem;
-      border-radius: 8px;
+      padding: 0.55rem 0.8rem;
+      border-radius: 12px;
       font-family: 'Inter', sans-serif;
       cursor: pointer;
       outline: none;
+      min-width: 180px;
     }
+    .sort-select:focus { border-color: var(--blue); }
 
     footer { background: #0f172a; color: rgba(255,255,255,0.5); text-align: center; padding: 2rem 1.5rem; font-size: 0.8rem; }
     footer strong { color: #fff; font-family: 'Outfit', sans-serif; }
@@ -182,7 +204,13 @@
       .nav-links { display: none; }
       .search-wrap { margin-left: 0; width: 100%; }
       .search-input { width: 100%; }
-      .filters-inner { gap: 0.5rem; }
+      .filters-inner { gap: 0.75rem; }
+      .filters-group,
+      .sort-wrap,
+      .search-wrap { width: 100%; max-width: none; }
+      .filter-chip-row { gap: 0.4rem; }
+      .filter-btn { flex: 0 0 auto; }
+      .sort-select { width: 100%; min-width: 0; }
     }
   </style>
 </head>
@@ -214,35 +242,41 @@
 <!-- FILTERS -->
 <div class="filters-bar">
   <div class="filters-inner">
-    <span class="filter-label">Year</span>
-    <button class="filter-btn active" data-year="all">All</button>
-    <button class="filter-btn" data-year="2024">2024</button>
-    <button class="filter-btn" data-year="2023">2023</button>
-    <button class="filter-btn" data-year="2022">2022</button>
-    <button class="filter-btn" data-year="2021">2021</button>
-    <button class="filter-btn" data-year="2020">2020</button>
+    <div class="filters-group">
+      <span class="filter-label">Year</span>
+      <div class="filter-chip-row">
+        <button class="filter-btn active" data-year="all">Any Year</button>
+        <button class="filter-btn" data-year="2024">2024</button>
+        <button class="filter-btn" data-year="2023">2023</button>
+        <button class="filter-btn" data-year="2022">2022</button>
+        <button class="filter-btn" data-year="2021">2021</button>
+        <button class="filter-btn" data-year="2020">2020</button>
+      </div>
+    </div>
 
-    <div class="filter-sep"></div>
-    <span class="filter-label">Price</span>
-    <button class="filter-btn active" data-price="all">All</button>
-    <button class="filter-btn" data-price="0-3500">Under R3,500</button>
-    <button class="filter-btn" data-price="3500-7000">R3,500–R7,000</button>
-    <button class="filter-btn" data-price="7000-99999">R7,000+</button>
+    <div class="filters-group">
+      <span class="filter-label">Price</span>
+      <div class="filter-chip-row">
+        <button class="filter-btn active" data-price="all">All Prices</button>
+        <button class="filter-btn" data-price="0-3500">Under R3.5k</button>
+        <button class="filter-btn" data-price="3500-7000">R3.5k-R7k</button>
+        <button class="filter-btn" data-price="7000-99999">R7k+</button>
+      </div>
+    </div>
 
-    <div class="filter-sep"></div>
     <div class="sort-wrap">
-      <span class="filter-label">Sort</span>
+      <span class="filter-label">Sort By</span>
       <select class="sort-select" id="sort-select">
-        <option value="score">Best Score</option>
+        <option value="score">Top Rated</option>
         <option value="year">Newest First</option>
-        <option value="price-asc">Price: Low–High</option>
-        <option value="price-desc">Price: High–Low</option>
+        <option value="price-asc">Lowest Price</option>
+        <option value="price-desc">Highest Price</option>
       </select>
     </div>
 
     <div class="search-wrap">
       <svg class="search-icon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" class="search-input" id="search-input" placeholder="Search phones…"/>
+      <input type="text" class="search-input" id="search-input" placeholder="Search Galaxy phones"/>
     </div>
   </div>
 </div>
