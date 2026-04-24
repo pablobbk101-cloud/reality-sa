@@ -5,7 +5,7 @@ const phones = [
     id: "a06",
     name: "Galaxy A06",
     year: 2025,
-    price: 1699,
+    price: 2299,
     chipset: "Helio G85",
     display: "6.7\" LCD, 60Hz",
     ram: "4GB",
@@ -20,6 +20,26 @@ const phones = [
     pros: ["Affordable entry price", "Decent battery life", "128GB storage included"],
     cons: ["60Hz LCD feels dated", "Helio G85 is slow", "No 5G"],
     mrPointSays: "The A06 is Samsung's most affordable 2025 option. You get a big battery and decent storage but the 60Hz LCD and Helio G85 chip make everything feel sluggish. It's fine for basic calls and WhatsApp but don't expect more."
+  },
+  {
+    id: "a07",
+    name: "Galaxy A07",
+    year: 2025,
+    price: 2499,
+    chipset: "Helio G85",
+    display: "6.7\" LCD, 60Hz",
+    ram: "4GB",
+    storage: "128GB",
+    battery: "5000mAh",
+    camera: "50MP + 2MP",
+    selfie: "8MP",
+    fiveG: false,
+    scores: { camera: 5, performance: 4, battery: 8, display: 4, value: 7 },
+    verdict: "Decent",
+    verdictColor: "yellow",
+    pros: ["128GB storage at entry price", "Big 5000mAh battery", "Affordable 2025 model"],
+    cons: ["60Hz LCD feels dated", "Helio G85 is slow", "No 5G"],
+    mrPointSays: "The A07 slots just above the A06 with the same core hardware but a slightly higher price tag. Battery life is its main selling point. It does the basics well, but don't expect speed or a great camera experience."
   },
   {
     id: "a16",
@@ -40,6 +60,26 @@ const phones = [
     pros: ["Super AMOLED at this price is rare", "Helio G99 handles daily use well", "Promised 6 years of updates"],
     cons: ["Only 4GB RAM", "No 5G", "No OIS on camera"],
     mrPointSays: "The A16 quietly punches above its weight. A Super AMOLED display under R4000 is genuinely impressive, and Samsung's 6-year update promise makes it a smart long-term buy for budget shoppers."
+  },
+  {
+    id: "a17",
+    name: "Galaxy A17",
+    year: 2025,
+    price: 3999,
+    chipset: "Helio G99",
+    display: "6.7\" Super AMOLED, 90Hz",
+    ram: "4GB",
+    storage: "128GB",
+    battery: "5000mAh",
+    camera: "50MP + 5MP + 2MP",
+    selfie: "13MP",
+    fiveG: false,
+    scores: { camera: 6, performance: 6, battery: 8, display: 7, value: 7 },
+    verdict: "Good Pick",
+    verdictColor: "green",
+    pros: ["Super AMOLED under R4000", "Helio G99 handles everyday tasks", "13MP selfie at this price"],
+    cons: ["No 5G", "Only 4GB RAM", "A16 offers near-identical value for less"],
+    mrPointSays: "The A17 sits right between the A16 and A26 5G — same AMOLED quality, same Helio G99, but without 5G. If you find it discounted, it's solid. Otherwise the A16 at R3,499 offers almost the same phone for less money."
   },
   {
     id: "a26-5g",
@@ -107,7 +147,7 @@ const phones = [
     id: "a05",
     name: "Galaxy A05",
     year: 2024,
-    price: 1999,
+    price: 1899,
     chipset: "MediaTek Helio G85",
     display: "6.7\" LCD, 60Hz",
     ram: "4GB",
@@ -127,7 +167,7 @@ const phones = [
     id: "a05s",
     name: "Galaxy A05s",
     year: 2024,
-    price: 2799,
+    price: 2899,
     chipset: "Snapdragon 680",
     display: "6.7\" LCD, 90Hz",
     ram: "4GB",
@@ -592,6 +632,7 @@ function getOverallScore(scores) {
 
 // Enrich phones with overall score
 phones.forEach(p => {
+  p.brand = p.brand || "Samsung";
   p.overall = getOverallScore(p.scores);
   p.scoreInfo = getScoreLabel(p.overall);
 });
